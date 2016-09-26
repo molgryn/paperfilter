@@ -1,0 +1,21 @@
+#ifndef VIRTUAL_PACKET_HPP
+#define VIRTUAL_PACKET_HPP
+
+#include <memory>
+#include <string>
+
+class VirtualPacket {
+public:
+  VirtualPacket(const std::string &ns);
+  ~VirtualPacket();
+  VirtualPacket(const VirtualPacket &) = delete;
+  VirtualPacket &operator=(const VirtualPacket &) = delete;
+
+  std::string ns() const;
+
+private:
+  class Private;
+  std::shared_ptr<Private> d;
+};
+
+#endif

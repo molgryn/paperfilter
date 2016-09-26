@@ -1,0 +1,21 @@
+{
+  "name": "nylonfilter",
+  "version": "0.0.1",
+  "description": "nylonfilter",
+  "main": "index.js",
+  "dependencies": {
+    "bindings": "~1.2.1",
+    "tmp": "0.0.29"
+  },
+  "scripts": {
+    "test": "mocha"
+  },
+  "gypfile": true,
+  "devDependencies": {
+    "electron": "1.4.1",
+    "nan": "^2.4.0",
+    "msgpack-lite": "^0.1.20",
+    "spectron": "^3.4.0",
+    "v8pp": "^1.2.1"
+  }
+}
