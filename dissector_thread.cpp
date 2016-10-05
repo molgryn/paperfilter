@@ -1,15 +1,15 @@
 #include "dissector_thread.hpp"
-#include "layer.hpp"
-#include "nylon_context.hpp"
-#include "packet.hpp"
-#include "packet_queue.hpp"
-#include "stream_chunk.hpp"
+#include <unordered_set>
+#include <thread>
 #include <cstdlib>
 #include <nan.h>
-#include <thread>
-#include <unordered_set>
 #include <v8.h>
 #include <v8pp/class.hpp>
+#include "packet.hpp"
+#include "layer.hpp"
+#include "stream_chunk.hpp"
+#include "packet_queue.hpp"
+#include "nylon_context.hpp"
 
 using namespace v8;
 
@@ -62,17 +62,24 @@ DissectorThread::Private::Private(const std::shared_ptr<Context> &ctx)
       NylonContext::init(isolate);
 
       for (const Dissector &diss : ctx.dissectors) {
+        v8::Local<v8::Context> moduleContext = v8::Context::New(isolate);
+        v8::Context::Scope context_scope(moduleContext);
+        NylonContext::init(isolate);
+
+        v8::Local<v8::Object> moduleObj = v8::Object::New(isolate);
+        moduleContext->Global()->Set(v8::String::NewFromUtf8(isolate, "module"),
+                                     moduleObj);
+
         v8::Local<v8::Function> func;
         Nan::MaybeLocal<Nan::BoundScript> script =
             Nan::CompileScript(v8pp::to_v8(isolate, diss.script));
         if (!script.IsEmpty()) {
-          Nan::MaybeLocal<v8::Value> result =
-              Nan::RunScript(script.ToLocalChecked());
-          if (!result.IsEmpty()) {
-            v8::Local<v8::Value> val = result.ToLocalChecked();
-            if (val->IsFunction()) {
-              func = val.As<v8::Function>();
-            }
+          Nan::RunScript(script.ToLocalChecked());
+          v8::Local<v8::Value> result =
+              moduleObj->Get(v8::String::NewFromUtf8(isolate, "exports"));
+
+          if (!result.IsEmpty() && result->IsFunction()) {
+            func = result.As<v8::Function>();
           }
         }
         if (func.IsEmpty()) {

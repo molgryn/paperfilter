@@ -260,3 +260,13 @@ void Buffer::indexOf(const v8::FunctionCallbackInfo<v8::Value> &args) const {
 const char *Buffer::data(size_t offset) const {
   return d->source->data() + d->start + offset;
 }
+
+void Buffer::from(const v8::FunctionCallbackInfo<v8::Value> &args) {
+  Local<Object> obj =
+      v8pp::class_<Buffer>::create_object(Isolate::GetCurrent(), args);
+  args.GetReturnValue().Set(obj);
+}
+
+bool Buffer::isBuffer(const v8::Local<v8::Value> &value) {
+  return v8pp::class_<Buffer>::unwrap_object(Isolate::GetCurrent(), value);
+}

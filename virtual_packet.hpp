@@ -8,9 +8,7 @@ class VirtualPacket {
 public:
   VirtualPacket(const std::string &ns);
   ~VirtualPacket();
-  VirtualPacket(const VirtualPacket &) = delete;
   VirtualPacket &operator=(const VirtualPacket &) = delete;
-
   std::string ns() const;
 
 private:

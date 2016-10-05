@@ -71,17 +71,24 @@ StreamDissectorThread::Private::Private(const std::shared_ptr<Context> &ctx)
       NylonContext::init(isolate);
 
       for (const Dissector &diss : ctx.dissectors) {
+        v8::Local<v8::Context> moduleContext = v8::Context::New(isolate);
+        v8::Context::Scope context_scope(moduleContext);
+        NylonContext::init(isolate);
+
+        v8::Local<v8::Object> moduleObj = v8::Object::New(isolate);
+        moduleContext->Global()->Set(v8::String::NewFromUtf8(isolate, "module"),
+                                     moduleObj);
+
         v8::Local<v8::Function> func;
         Nan::MaybeLocal<Nan::BoundScript> script =
             Nan::CompileScript(v8pp::to_v8(isolate, diss.script));
         if (!script.IsEmpty()) {
-          Nan::MaybeLocal<v8::Value> result =
-              Nan::RunScript(script.ToLocalChecked());
-          if (!result.IsEmpty()) {
-            v8::Local<v8::Value> val = result.ToLocalChecked();
-            if (val->IsFunction()) {
-              func = val.As<v8::Function>();
-            }
+          Nan::RunScript(script.ToLocalChecked());
+          v8::Local<v8::Value> result =
+              moduleObj->Get(v8::String::NewFromUtf8(isolate, "exports"));
+
+          if (!result.IsEmpty() && result->IsFunction()) {
+            func = result.As<v8::Function>();
           }
         }
         if (func.IsEmpty()) {
@@ -97,9 +104,8 @@ StreamDissectorThread::Private::Private(const std::shared_ptr<Context> &ctx)
         }
       }
 
-      std::unordered_map<std::string,
-                         std::vector<v8::UniquePersistent<v8::Object>>>
-          instances;
+      std::unordered_map<
+          std::string, std::vector<v8::UniquePersistent<v8::Object>>> instances;
 
       while (true) {
         std::unique_lock<std::mutex> lock(mutex);
@@ -144,6 +150,9 @@ StreamDissectorThread::Private::Private(const std::shared_ptr<Context> &ctx)
             v8pp::class_<StreamChunk>::import_external(isolate,
                                                        new StreamChunk(*chunk));
 
+        std::vector<std::unique_ptr<VirtualPacket>> vpackets;
+        std::vector<std::unique_ptr<StreamChunk>> streams;
+
         for (const auto &unique : objs) {
           v8::Local<v8::Object> obj =
               v8::Local<v8::Object>::New(isolate, unique);
@@ -166,15 +175,14 @@ StreamDissectorThread::Private::Private(const std::shared_ptr<Context> &ctx)
                 if (VirtualPacket *vp =
                         v8pp::class_<VirtualPacket>::unwrap_object(
                             isolate, array->Get(i))) {
-
-                  printf("%s\n", vp->ns().c_str());
+                  vpackets.push_back(
+                      std::unique_ptr<VirtualPacket>(new VirtualPacket(*vp)));
                 } else if (StreamChunk *stream =
                                v8pp::class_<StreamChunk>::unwrap_object(
                                    isolate, array->Get(i))) {
-                  /*
-                streams.push_back(std::unique_ptr<StreamChunk>(
-                    new StreamChunk(*stream, pair.second)));
-                    */
+
+                  streams.push_back(std::unique_ptr<StreamChunk>(
+                      new StreamChunk(*stream, chunk->layer())));
                 }
               }
             }
@@ -183,6 +191,9 @@ StreamDissectorThread::Private::Private(const std::shared_ptr<Context> &ctx)
 
         v8pp::class_<Packet>::unreference_external(isolate, packet.get());
         v8pp::class_<Layer>::unreference_external(isolate, layer.get());
+
+        if (ctx.streamsCb)
+          ctx.streamsCb(std::move(streams));
 
         lock.lock();
       }

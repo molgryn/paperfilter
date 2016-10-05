@@ -19,17 +19,7 @@
               '::<Ethernet>',
               /::<Ethernet>/
             ],
-            script: `
-              const {Layer, StreamChunk} = require('dripcap');
-              class Dissector {
-                analyze(packet, parentLayer) {
-                  let layer = new Layer('::Ethernet');
-                  layer.summary = '' + Math.random();
-                  let pkt = new StreamChunk('::Ethernet::TCP', 'tgrtdd' + Math.floor(Math.random() * 5));
-                  return [layer, pkt];
-                }
-              };
-            `
+            script: __dirname + '/script/eth.es'
           }
         ],
         stream_dissectors: [
@@ -38,57 +28,45 @@
               '::Ethernet::TCP',
               /::Ethernet::TCP/
             ],
-            script: `
-              const {Layer, StreamChunk, VirtualPacket} = require('dripcap');
-              class Dissector {
-                constructor() {
-                  this.basePackets = [];
-                }
-                analyze(packet, parentLayer, chunk) {
-                  this.basePackets.push(packet.seq);
-                  if (this.basePackets.length > 3) {
-                    let vp = new VirtualPacket('::Ethernet::TCP::HTTP');
-                    return [vp];
-                  }
-                }
-              };
-            `
+            script: __dirname + '/script/str.es'
           }
         ]
       };
-      var sess = new nylon.Session(option);
 
       var msgpack = require('msgpack-lite');
       var readStream = require('fs').createReadStream("dump.msgpack");
       var decodeStream = msgpack.createDecodeStream();
-      readStream.pipe(decodeStream).on("data", function(data) {
-        if (data.length === 4) {
-          var pkt = {
-            ts_sec: data[0],
-            ts_nsec: data[1],
-            length: data[2],
-            payload: data[3]
-          };
-          sess.analyze(pkt);
-        }
-      });
-      sess.filter('pkt', '(function(pkt) { return pkt.payload.slice(0, 101).length > 100 })');
-      sess.filter('pkt2', '{');
 
-      sess.on('packets', (stat) => {
-        console.log(stat);
-        console.log(sess.get(1));
-        document.getElementById("aa").appendChild(document.createTextNode(sess.namespace));
-      })
-      sess.on('filter', (name, packets) => {
-        console.log(name);
-        console.log(packets);
-        document.getElementById("bb").appendChild(document.createTextNode(sess.namespace));
-      })
-      sess.on('error', (err) => {
-        console.log(err);
-        document.getElementById("cc").appendChild(document.createTextNode(sess.namespace));
-      })
+      nylon.Session.create(option).then((sess) => {
+        readStream.pipe(decodeStream).on("data", function(data) {
+          if (data.length === 4) {
+            var pkt = {
+              ts_sec: data[0],
+              ts_nsec: data[1],
+              length: data[2],
+              payload: data[3]
+            };
+            sess.analyze(pkt);
+          }
+        });
+        sess.filter('pkt', '(function(pkt) { return pkt.payload.slice(0, 101).length > 100 })');
+        sess.filter('pkt2', '{');
+
+        sess.on('packets', (stat) => {
+          console.log(stat);
+          console.log(sess.get(1));
+          document.getElementById("aa").appendChild(document.createTextNode(sess.namespace));
+        })
+        sess.on('filter', (name, packets) => {
+          console.log(name);
+          console.log(packets);
+          document.getElementById("bb").appendChild(document.createTextNode(sess.namespace));
+        })
+        sess.on('error', (err) => {
+          console.log(err);
+          document.getElementById("cc").appendChild(document.createTextNode(sess.namespace));
+        })
+      });
     </script>
   </body>
 </html>

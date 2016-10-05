@@ -33,6 +33,7 @@ StreamDispatcher::Private::Private(const std::shared_ptr<Context> &ctx)
 
   auto dissCtx = std::make_shared<StreamDissectorThread::Context>();
   dissCtx->tmpDir = ctx->tmpDir;
+  dissCtx->streamsCb = ctx->streamsCb;
   dissCtx->errorCb = ctx->errorCb;
   dissCtx->dissectors = ctx->dissectors;
   for (int i = 0; i < 4; ++i) {
@@ -69,4 +70,24 @@ void StreamDispatcher::insert(
     }
   }
   d->streamChunks.erase(d->streamChunks.begin(), it);
+}
+
+void StreamDispatcher::insert(
+    std::vector<std::unique_ptr<StreamChunk>> streamChunks) {
+  std::lock_guard<std::mutex> lock(d->mutex);
+  for (auto &chunk : streamChunks) {
+    const std::string &id = chunk->id();
+    Stream &stream = d->streams[id];
+    if (stream.thread < 0) {
+      static std::random_device dev;
+      static std::mt19937_64 generator(dev());
+      static std::uniform_int_distribution<int> dist(
+          0, d->dissectorThreads.size() - 1);
+      stream.thread = dist(generator);
+    }
+    stream.lastUsed = std::chrono::system_clock::now();
+    StreamDissectorThread &thread = *d->dissectorThreads[stream.thread];
+    thread.insert(std::move(chunk));
+            printf("ins\n");
+  }
 }
