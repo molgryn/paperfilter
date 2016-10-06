@@ -71,12 +71,8 @@ StreamDissectorThread::Private::Private(const std::shared_ptr<Context> &ctx)
       NylonContext::init(isolate);
 
       for (const Dissector &diss : ctx.dissectors) {
-        v8::Local<v8::Context> moduleContext = v8::Context::New(isolate);
-        v8::Context::Scope context_scope(moduleContext);
-        NylonContext::init(isolate);
-
         v8::Local<v8::Object> moduleObj = v8::Object::New(isolate);
-        moduleContext->Global()->Set(v8::String::NewFromUtf8(isolate, "module"),
+        context->Global()->Set(v8::String::NewFromUtf8(isolate, "module"),
                                      moduleObj);
 
         v8::Local<v8::Function> func;

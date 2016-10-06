@@ -57,14 +57,14 @@
           console.log(sess.get(1));
           document.getElementById("aa").appendChild(document.createTextNode(sess.namespace));
         })
-        //sess.on('filter', (name, packets) => {
-        //  console.log(name);
-        //  console.log(packets);
-          document.getElementById("bb").appendChild(document.createTextNode(option.namespace));
-        //})
+        sess.on('filter', (name, packets) => {
+          console.log(name);
+          console.log(packets);
+          document.getElementById("bb").appendChild(document.createTextNode(sess.namespace));
+        })
         sess.on('error', (err) => {
           console.log(err);
-          document.getElementById("cc").appendChild(document.createTextNode(option.namespace));
+          document.getElementById("cc").appendChild(document.createTextNode(sess.namespace));
         })
       });
     </script>

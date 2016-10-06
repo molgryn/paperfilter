@@ -81,15 +81,16 @@ FilterThread::Private::Private(const std::shared_ptr<Context> &ctx) : ctx(ctx) {
             break;
           if (ctx.maxSeq < ctx.store->maxSeq()) {
             uint32_t seq = ++ctx.maxSeq;
+            lock.unlock();
             const std::shared_ptr<Packet> &pkt = ctx.store->get(seq);
+            lock.lock();
 
-            printf("%p\n", pkt.get());
-
-                        /*
             v8::Handle<v8::Value> args[1] = {
                 v8pp::class_<Packet>::reference_external(isolate, pkt.get())};
             v8::Local<v8::Value> result =
                 func->Call(isolate->GetCurrentContext()->Global(), 1, args);
+
+            v8pp::class_<Packet>::unreference_external(isolate, pkt.get());
             if (result.IsEmpty()) {
               if (ctx.errorCb) {
                 Nan::Utf8String str(try_catch.Exception());
@@ -101,7 +102,6 @@ FilterThread::Private::Private(const std::shared_ptr<Context> &ctx) : ctx(ctx) {
               if (ctx.updateCb)
                 ctx.updateCb(pkt->seq());
             }
-            */
           }
         }
       }

@@ -2,9 +2,6 @@
   "targets": [
     {
       "target_name": "nylonfilter",
-      "defines": [
-        "V8PP_ISOLATE_DATA_SLOT=2",
-      ],
       "sources": [
         "main.cpp",
         "buffer.cpp",
@@ -26,7 +23,7 @@
       ],
       "include_dirs": [
         "<!(node -e \"require('nan')\")",
-        "<!(node -e \"require('v8pp')\")"
+        "vendor/v8pp"
       ],
       'cflags!': [ '-fno-exceptions' ],
       'cflags_cc!': [ '-fno-exceptions', '-fno-rtti' ],
