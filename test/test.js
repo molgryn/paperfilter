@@ -2,7 +2,7 @@ var Application = require('spectron').Application
 var assert = require('assert')
 
 describe('application launch', function () {
-  this.timeout(10000)
+  this.timeout(60000)
 
   beforeEach(function () {
     this.app = new Application({
@@ -33,9 +33,9 @@ describe('application launch', function () {
 
   it('shows an initial window', function () {
     return Promise.all([
-      this.app.client.waitUntilTextExists('#aa', '::<Ethernet>', 10000),
-      this.app.client.waitUntilTextExists('#bb', '::<Ethernet>', 10000),
-      this.app.client.waitUntilTextExists('#cc', '::<Ethernet>', 10000)
+      this.app.client.waitUntilTextExists('#aa', '::<Ethernet>', 60000),
+      this.app.client.waitUntilTextExists('#bb', '::<Ethernet>', 60000),
+      this.app.client.waitUntilTextExists('#cc', '::<Ethernet>', 60000)
     ]);
   });
 })
