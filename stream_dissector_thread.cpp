@@ -250,8 +250,8 @@ StreamDissectorThread::~StreamDissectorThread() {}
 
 void StreamDissectorThread::insert(std::unique_ptr<StreamChunk> chunk) {
   std::lock_guard<std::mutex> lock(d->mutex);
-  d->chunks.push(std::move(chunk));
-  d->cond.notify_one();
+  //d->chunks.push(std::move(chunk));
+  //d->cond.notify_one();
 }
 
 void StreamDissectorThread::clearStream(const std::string &ns,
