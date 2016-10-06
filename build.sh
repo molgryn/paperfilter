@@ -4,8 +4,8 @@ if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then
   export CC=gcc-5
   export CXX=g++-5
   export DISPLAY=:99.0
-  Xvfb :99 -screen 0 1024x768x24 > /dev/null 2>&1 &
-  sleep 3
+  sh -e /etc/init.d/xvfb start +extension RANDR;
+  sleep 30
 
   export ELECTRON_VERSION=`jq .devDependencies.electron package.json -r`
   echo $ELECTRON_VERSION
@@ -29,3 +29,6 @@ npm install --depth 0
 
 make clean
 make
+
+electron app.js --enable-logging
+npm test

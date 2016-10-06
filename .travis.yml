@@ -17,7 +17,6 @@ install:
 - true
 script:
 - ./build.sh
-- electron app.js --enable-logging
 - npm test
 - npm test
 - npm test
