@@ -49,7 +49,7 @@
             sess.analyze(pkt);
           }
         });
-        //sess.filter('pkt', '(function(pkt) { return pkt.payload.slice(0, 101).length > 100 })');
+        sess.filter('pkt', '(function(pkt) { return pkt.payload.slice(0, 101).length > 100 })');
         //sess.filter('pkt2', '{');
 
         sess.on('packets', (stat) => {
