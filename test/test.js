@@ -7,13 +7,26 @@ describe('application launch', function () {
   beforeEach(function () {
     this.app = new Application({
       path: require('electron'),
-      args: [__dirname + '/../app.js']
+      args: ['--enable-logging', __dirname + '/../app.js']
     })
     return this.app.start()
   })
 
   afterEach(function () {
     if (this.app && this.app.isRunning()) {
+      if (this.currentTest.state === 'failed') {
+        this.app.client.getMainProcessLogs().then((logs) => {
+          logs.forEach((log) => {
+            console.log(log)
+          });
+        })
+        this.app.client.getRenderProcessLogs().then((logs) => {
+          logs.forEach((log) => {
+            console.log(log.message);
+            console.log(log.source);
+          });
+        });
+      }
       return this.app.stop()
     }
   })
