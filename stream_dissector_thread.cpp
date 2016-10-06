@@ -115,7 +115,7 @@ StreamDissectorThread::Private::Private(const std::shared_ptr<Context> &ctx)
 
         std::unique_ptr<StreamChunk> chunk = std::move(chunks.front());
         chunks.pop();
-        lock.unlock();
+        //lock.unlock();
 
         const std::string &key = chunk->ns() + "@" + chunk->id();
         auto it = instances.find(key);
@@ -195,7 +195,7 @@ StreamDissectorThread::Private::Private(const std::shared_ptr<Context> &ctx)
         if (ctx.streamsCb)
           ctx.streamsCb(std::move(streams));
 
-        lock.lock();
+        //lock.lock();
       }
     }
 
@@ -250,8 +250,8 @@ StreamDissectorThread::~StreamDissectorThread() {}
 
 void StreamDissectorThread::insert(std::unique_ptr<StreamChunk> chunk) {
   std::lock_guard<std::mutex> lock(d->mutex);
-  //d->chunks.push(std::move(chunk));
-  //d->cond.notify_one();
+  d->chunks.push(std::move(chunk));
+  d->cond.notify_one();
 }
 
 void StreamDissectorThread::clearStream(const std::string &ns,
