@@ -83,11 +83,10 @@ void StreamDispatcher::insert(
       static std::mt19937_64 generator(dev());
       static std::uniform_int_distribution<int> dist(
           0, d->dissectorThreads.size() - 1);
-      stream.thread = 0;//dist(generator);
+      stream.thread = dist(generator);
     }
     stream.lastUsed = std::chrono::system_clock::now();
     StreamDissectorThread &thread = *d->dissectorThreads[stream.thread];
     thread.insert(std::move(chunk));
-            printf("ins\n");
   }
 }

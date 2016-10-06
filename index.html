@@ -49,23 +49,23 @@
             sess.analyze(pkt);
           }
         });
-        //sess.filter('pkt', '(function(pkt) { return pkt.payload.slice(0, 101).length > 100 })');
-        //sess.filter('pkt2', '{');
+        sess.filter('pkt', '(function(pkt) { return pkt.payload.slice(0, 101).length > 100 })');
+        sess.filter('pkt2', '{');
 
         sess.on('packets', (stat) => {
           console.log(stat);
           console.log(sess.get(1));
           document.getElementById("aa").appendChild(document.createTextNode(sess.namespace));
         })
-        //sess.on('filter', (name, packets) => {
-        //  console.log(name);
-        //  console.log(packets);
-          document.getElementById("bb").appendChild(document.createTextNode(option.namespace));
-        //})
-        //sess.on('error', (err) => {
-        //  console.log(err);
-          document.getElementById("cc").appendChild(document.createTextNode(option.namespace));
-        //})
+        sess.on('filter', (name, packets) => {
+          console.log(name);
+          console.log(packets);
+          document.getElementById("bb").appendChild(document.createTextNode(sess.namespace));
+        })
+        sess.on('error', (err) => {
+          console.log(err);
+          document.getElementById("cc").appendChild(document.createTextNode(sess.namespace));
+        })
       });
     </script>
   </body>
