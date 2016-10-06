@@ -150,7 +150,7 @@ public:
 protected:
 	static type_index register_class()
 	{
-		static type_index next_index = 0;
+		thread_local type_index next_index = 0;
 		return next_index++;
 	}
 
@@ -181,7 +181,7 @@ class class_singleton : public class_info
 {
 	static type_index class_type()
 	{
-		static type_index const my_type = class_info::register_class();
+		thread_local type_index const my_type = class_info::register_class();
 		return my_type;
 	}
 private:
@@ -336,9 +336,12 @@ public:
 				if (result && result->type() == my_type)
 				{
 					return *result;
+				} else {
+					printf("<<< %d %d\n", result->type(), my_type);
 				}
 			}
 		}
+		printf(">>> %d %d\n", class_type(), singletons->size());
 		throw std::runtime_error("v8pp::class_ not created");
 	}
 
