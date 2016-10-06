@@ -83,7 +83,9 @@ FilterThread::Private::Private(const std::shared_ptr<Context> &ctx) : ctx(ctx) {
             uint32_t seq = ++ctx.maxSeq;
             const std::shared_ptr<Packet> &pkt = ctx.store->get(seq);
 
-            /*
+            printf("%p\n", pkt.get());
+
+                        /*
             v8::Handle<v8::Value> args[1] = {
                 v8pp::class_<Packet>::reference_external(isolate, pkt.get())};
             v8::Local<v8::Value> result =

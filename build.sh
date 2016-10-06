@@ -29,5 +29,3 @@ npm install --depth 0
 
 make clean
 make
-
-npm test

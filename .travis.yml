@@ -17,5 +17,23 @@ install:
 - true
 script:
 - ./build.sh
+- npm test
+- npm test
+- npm test
+- npm test
+- npm test
+- npm test
+- npm test
+- npm test
+- npm test
+- npm test
+- npm test
+- npm test
+- npm test
+- npm test
+- npm test
+- npm test
+- npm test
+- npm test
 notifications:
   email: false
