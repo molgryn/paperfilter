@@ -5,6 +5,7 @@
 #include <v8pp/object.hpp>
 #include <v8pp/class.hpp>
 #include "packet.hpp"
+#include "virtual_packet.hpp"
 #include "packet_queue.hpp"
 #include "packet_store.hpp"
 #include "stream_chunk.hpp"
@@ -177,6 +178,10 @@ Session::Session(v8::Local<v8::Value> option) : d(new Private()) {
   streamCtx->streamsCb = [this](
       std::vector<std::unique_ptr<StreamChunk>> streams) {
     d->streamDispatcher->insert(std::move(streams));
+  };
+  streamCtx->vpacketsCb = [this](
+      std::vector<std::unique_ptr<VirtualPacket>> vpackets) {
+    // printf("%d\n", vpackets.size());
   };
   d->streamDispatcher.reset(new StreamDispatcher(streamCtx));
 }

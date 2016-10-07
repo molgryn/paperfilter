@@ -199,6 +199,9 @@ StreamDissectorThread::Private::Private(const std::shared_ptr<Context> &ctx)
         v8pp::class_<Packet>::unreference_external(isolate, packet.get());
         v8pp::class_<Layer>::unreference_external(isolate, layer.get());
 
+        if (ctx.vpacketsCb)
+          ctx.vpacketsCb(std::move(vpackets));
+
         if (ctx.streamsCb)
           ctx.streamsCb(std::move(streams));
 
