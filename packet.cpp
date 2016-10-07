@@ -46,7 +46,8 @@ Packet::Packet(v8::Local<v8::Object> option) : d(new Private()) {
 }
 
 Packet::Packet(const VirtualPacket &vp) : d(new Private()) {
-  d->payload = vp.payload();
+  d->payload = std::make_shared<std::vector<char>>();
+  d->length = 0;
   addLayer(std::make_shared<Layer>(vp.ns()));
 }
 
