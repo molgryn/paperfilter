@@ -27,8 +27,4 @@ fi
 npm install --depth 0 -g node-gyp mocha electron@${ELECTRON_VERSION}
 npm install --depth 0
 
-make clean
-make
-
-electron app.js --enable-logging
-npm test
+for i in {1..10}; do npm test; test $? -ne 0 && exit 1; done

@@ -13,6 +13,7 @@
     "tmp": "0.0.29"
   },
   "scripts": {
+    "install": "make",
     "test": "mocha"
   },
   "gypfile": true,
