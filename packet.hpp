@@ -8,10 +8,12 @@
 #include <vector>
 
 class Layer;
+class VirtualPacket;
 
 class Packet {
 public:
   Packet(v8::Local<v8::Object> option);
+  Packet(const VirtualPacket &vp);
   ~Packet();
   Packet(const Packet &) = delete;
   Packet &operator=(const Packet &) = delete;

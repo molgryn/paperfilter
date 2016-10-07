@@ -180,7 +180,9 @@ Session::Session(v8::Local<v8::Value> option) : d(new Private()) {
   };
   streamCtx->vpacketsCb = [this](
       std::vector<std::unique_ptr<VirtualPacket>> vpackets) {
-    // printf("%d\n", vpackets.size());
+    for (auto &vp : vpackets) {
+      d->queue.push(std::unique_ptr<Packet>(new Packet(*vp)));
+    }
   };
   d->streamDispatcher.reset(new StreamDispatcher(streamCtx));
 }

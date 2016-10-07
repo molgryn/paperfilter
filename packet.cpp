@@ -1,6 +1,8 @@
 #include "packet.hpp"
 #include "buffer.hpp"
 #include "layer.hpp"
+#include "virtual_packet.hpp"
+#include <chrono>
 #include <node_buffer.h>
 #include <v8pp/class.hpp>
 #include <v8pp/object.hpp>
@@ -14,12 +16,12 @@ public:
 
 public:
   uint32_t seq = 0;
-  uint32_t ts_sec = 0;
+  uint32_t ts_sec = std::chrono::seconds(std::time(NULL)).count();
   uint32_t ts_nsec = 0;
   uint32_t length = 0;
   std::string summary;
   std::string extension;
-  std::shared_ptr<const std::vector<char>> payload;
+  std::shared_ptr<const std::vector<char>> payload = std::make_shared<std::vector<char>>();
   std::unordered_map<std::string, std::shared_ptr<Layer>> layers;
 };
 
@@ -41,6 +43,10 @@ Packet::Packet(v8::Local<v8::Object> option) : d(new Private()) {
                    node::Buffer::Data(payload) + node::Buffer::Length(payload));
     d->payload = buffer;
   }
+}
+
+Packet::Packet(const VirtualPacket &vp) : d(new Private()) {
+  addLayer(std::make_shared<Layer>(vp.ns()));
 }
 
 Packet::~Packet() {}
