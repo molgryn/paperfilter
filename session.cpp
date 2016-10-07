@@ -35,7 +35,6 @@ public:
   std::vector<std::unique_ptr<DissectorThread>> dissectorThreads;
   std::unordered_map<std::string, FilterContext> filterThreads;
   std::string ns;
-  uint32_t packetSeq = 0;
 
   UniquePersistent<Function> packetsCb;
   UniquePersistent<Function> filtersCb;
@@ -189,7 +188,6 @@ Session::Session(v8::Local<v8::Value> option) : d(new Private()) {
 Session::~Session() {}
 
 void Session::analyze(std::unique_ptr<Packet> pkt) {
-  pkt->setSeq(++d->packetSeq);
   pkt->addLayer(std::make_shared<Layer>(d->ns));
   d->queue.push(std::move(pkt));
 }

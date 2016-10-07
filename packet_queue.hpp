@@ -10,15 +10,15 @@ class Packet;
 
 class PacketQueue {
 public:
-  void push(const std::shared_ptr<Packet> &packet);
+  PacketQueue();
+  ~PacketQueue();
+  void push(std::unique_ptr<Packet> packet);
   std::shared_ptr<Packet> pop();
   void close();
 
 private:
-  std::queue<std::shared_ptr<Packet>> queue;
-  std::mutex mutex;
-  std::condition_variable cond;
-  bool closed = false;
+  class Private;
+  std::unique_ptr<Private> d;
 };
 
 #endif
