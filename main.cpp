@@ -12,23 +12,6 @@
 using namespace v8;
 
 void Init(v8::Local<v8::Object> exports) {
-  signal(SIGSEGV, [](int sig) {
-    void *array[256];
-    size_t size = backtrace(array, 256);
-    //auto spd = spdlog::get("console");
-    //spd->critical("Error: signal {}", sig);
-    backtrace_symbols_fd(array, size, STDERR_FILENO);
-    exit(1);
-});
-std::set_terminate([]() {
-    void *array[256];
-    size_t size = backtrace(array, 256);
-    //auto spd = spdlog::get("console");
-    //spd->critical("Error: std::terminate");
-    backtrace_symbols_fd(array, size, STDERR_FILENO);
-    exit(1);
-});
-
   SessionPacketWrapper::Init(exports);
   SessionLayerWrapper::Init(exports);
   SessionWrapper::Init(exports);

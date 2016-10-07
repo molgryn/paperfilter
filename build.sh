@@ -24,7 +24,8 @@ if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then
   npm install --depth 0 electron@${ELECTRON_VERSION}
 fi
 
-npm install --depth 0 -g node-gyp mocha electron@${ELECTRON_VERSION}
+npm install --depth 0 -g node-gyp mocha
 npm install --depth 0
 
 for i in {1..10}; do npm test; test $? -ne 0 && exit 1; done
+exit 0
