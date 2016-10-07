@@ -21,7 +21,7 @@ public:
   uint32_t length = 0;
   std::string summary;
   std::string extension;
-  std::shared_ptr<const std::vector<char>> payload = std::make_shared<std::vector<char>>();
+  std::shared_ptr<const std::vector<char>> payload;
   std::unordered_map<std::string, std::shared_ptr<Layer>> layers;
 };
 
@@ -46,6 +46,7 @@ Packet::Packet(v8::Local<v8::Object> option) : d(new Private()) {
 }
 
 Packet::Packet(const VirtualPacket &vp) : d(new Private()) {
+  d->payload = vp.payload();
   addLayer(std::make_shared<Layer>(vp.ns()));
 }
 

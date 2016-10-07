@@ -336,12 +336,9 @@ public:
 				if (result && result->type() == my_type)
 				{
 					return *result;
-				} else {
-					printf("<<< %d %d\n", result->type(), my_type);
 				}
 			}
 		}
-		printf(">>> %d %d\n", class_type(), singletons->size());
 		throw std::runtime_error("v8pp::class_ not created");
 	}
 
