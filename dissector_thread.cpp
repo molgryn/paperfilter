@@ -64,7 +64,7 @@ DissectorThread::Private::Private(const std::shared_ptr<Context> &ctx)
       for (const Dissector &diss : ctx.dissectors) {
         v8::Local<v8::Object> moduleObj = v8::Object::New(isolate);
         context->Global()->Set(v8::String::NewFromUtf8(isolate, "module"),
-                                     moduleObj);
+                               moduleObj);
 
         v8::Local<v8::Function> func;
         Nan::MaybeLocal<Nan::BoundScript> script =

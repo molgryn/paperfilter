@@ -52,11 +52,6 @@
         sess.filter('pkt', '(function(pkt) { return pkt.payload.slice(0, 101).length > 100 })');
         sess.filter('pkt2', '{');
 
-        const {app} = require('electron').remote
-        setTimeout(() => {
-          app.quit()
-        }, 1000)
-
         sess.on('packets', (stat) => {
           console.log(stat);
           console.log(sess.get(1));

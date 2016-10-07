@@ -73,7 +73,7 @@ StreamDissectorThread::Private::Private(const std::shared_ptr<Context> &ctx)
       for (const Dissector &diss : ctx.dissectors) {
         v8::Local<v8::Object> moduleObj = v8::Object::New(isolate);
         context->Global()->Set(v8::String::NewFromUtf8(isolate, "module"),
-                                     moduleObj);
+                               moduleObj);
 
         v8::Local<v8::Function> func;
         Nan::MaybeLocal<Nan::BoundScript> script =
@@ -181,6 +181,17 @@ StreamDissectorThread::Private::Private(const std::shared_ptr<Context> &ctx)
                       new StreamChunk(*stream, chunk->layer())));
                 }
               }
+            } else if (VirtualPacket *vp =
+                           v8pp::class_<VirtualPacket>::unwrap_object(isolate,
+                                                                      result)) {
+              vpackets.push_back(
+                  std::unique_ptr<VirtualPacket>(new VirtualPacket(*vp)));
+            } else if (StreamChunk *stream =
+                           v8pp::class_<StreamChunk>::unwrap_object(isolate,
+                                                                    result)) {
+
+              streams.push_back(std::unique_ptr<StreamChunk>(
+                  new StreamChunk(*stream, chunk->layer())));
             }
           }
         }
