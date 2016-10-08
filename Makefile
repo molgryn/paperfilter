@@ -11,6 +11,6 @@ clean:
 	@node-gyp clean
 
 fmt:
-	@clang-format -i *.cpp *.hpp
+	@clang-format -i **/*.cpp **/*.hpp 
 
 .PHONY: all clean fmt

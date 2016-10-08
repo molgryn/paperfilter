@@ -28,6 +28,7 @@ public:
   std::shared_ptr<const Packet> get(uint32_t seq) const;
 
   std::string ns() const;
+  bool permission() const;
 
 private:
   class Private;

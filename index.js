@@ -88,6 +88,10 @@ class Session extends EventEmitter {
   get namespace() {
     return this.sess.namespace;
   }
+
+  get permission() {
+    return this.sess.permission;
+  }
 }
 
 module.exports = {

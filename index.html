@@ -51,6 +51,7 @@
         });
         sess.filter('pkt', '(function(pkt) { return pkt.payload.slice(0, 101).length > 100 })');
         sess.filter('pkt2', '{');
+        console.log(sess.permission);
 
         let i = 1;
         sess.on('packets', (stat) => {

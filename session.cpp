@@ -14,6 +14,7 @@
 #include "dissector.hpp"
 #include "filter_thread.hpp"
 #include "layer.hpp"
+#include "permission.hpp"
 
 using namespace v8;
 
@@ -241,3 +242,8 @@ std::shared_ptr<const Packet> Session::get(uint32_t seq) const {
 }
 
 std::string Session::ns() const { return d->ns; }
+
+bool Session::permission() const
+{
+  return Permission::test();
+}
