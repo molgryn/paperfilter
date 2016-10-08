@@ -253,18 +253,14 @@ std::shared_ptr<const Packet> Session::get(uint32_t seq) const {
 
 std::string Session::ns() const { return d->ns; }
 
-bool Session::permission() const
-{
-  return Permission::test();
-}
+bool Session::permission() const { return Permission::test(); }
 
-v8::Local<v8::Array> Session::devices() const
-{
+v8::Local<v8::Array> Session::devices() const {
   Isolate *isolate = Isolate::GetCurrent();
   const std::vector<Pcap::Device> &devs = d->pcap->devices();
   v8::Local<v8::Array> array = v8::Array::New(isolate, devs.size());
   for (size_t i = 0; i < devs.size(); ++i) {
-    const Pcap::Device& dev = devs[i];
+    const Pcap::Device &dev = devs[i];
     v8::Local<v8::Object> obj = v8::Object::New(isolate);
     v8pp::set_option(isolate, obj, "id", dev.id);
     v8pp::set_option(isolate, obj, "name", dev.name);
@@ -275,3 +271,18 @@ v8::Local<v8::Array> Session::devices() const
   }
   return array;
 }
+
+void Session::setInterface(const std::string &ifs) {
+  d->pcap->setInterface(ifs);
+}
+std::string Session::interface() const { return d->pcap->interface(); }
+void Session::setPromiscuous(bool promisc) { d->pcap->setPromiscuous(promisc); }
+bool Session::promiscuous() const { return d->pcap->promiscuous(); }
+void Session::setSnaplen(int len) { d->pcap->setSnaplen(len); }
+int Session::snaplen() const { return d->pcap->snaplen(); }
+bool Session::setBPF(const std::string &filter, std::string *error) {
+  return d->pcap->setBPF(filter, error);
+}
+
+void Session::start() { d->pcap->start(); }
+void Session::stop() { d->pcap->stop(); }

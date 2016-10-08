@@ -96,6 +96,42 @@ class Session extends EventEmitter {
   get devices() {
     return this.sess.devices;
   }
+
+  get interface() {
+    return this.sess.interface;
+  }
+
+  set interface(ifs) {
+    this.sess.interface = ifs;
+  }
+
+  get promiscuous() {
+    return this.sess.promiscuous;
+  }
+
+  set promiscuous(promisc) {
+    this.sess.promiscuous = promisc;
+  }
+
+  get snaplen() {
+    return this.sess.snaplen;
+  }
+
+  set snaplen(len) {
+    this.sess.snaplen = len;
+  }
+
+  setBPF(bpf) {
+    this.sess.setBPF(bpf);
+  }
+
+  start() {
+    this.sess.start();
+  }
+
+  stop() {
+    this.sess.stop();
+  }
 }
 
 module.exports = {

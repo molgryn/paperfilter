@@ -54,8 +54,8 @@ Packet::Packet(const VirtualPacket &vp) : d(new Private()) {
   addLayer(std::make_shared<Layer>(vp.ns()));
 }
 
-Packet::Packet(const struct pcap_pkthdr *h, const uint8_t *bytes) : d(new Private())
-{
+Packet::Packet(const struct pcap_pkthdr *h, const uint8_t *bytes)
+    : d(new Private()) {
   d->ts_sec = h->ts.tv_sec;
   d->ts_nsec = h->ts.tv_usec;
   d->length = h->len;

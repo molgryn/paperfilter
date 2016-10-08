@@ -31,6 +31,16 @@ public:
   bool permission() const;
 
   v8::Local<v8::Array> devices() const;
+  void setInterface(const std::string &ifs);
+  std::string interface() const;
+  void setPromiscuous(bool promisc);
+  bool promiscuous() const;
+  void setSnaplen(int len);
+  int snaplen() const;
+  bool setBPF(const std::string &filter, std::string *error);
+
+  void start();
+  void stop();
 
 private:
   class Private;

@@ -30,6 +30,15 @@ public:
     Nan::SetAccessor(otl, Nan::New("namespace").ToLocalChecked(), ns);
     Nan::SetAccessor(otl, Nan::New("permission").ToLocalChecked(), permission);
     Nan::SetAccessor(otl, Nan::New("devices").ToLocalChecked(), devices);
+    Nan::SetAccessor(otl, Nan::New("interface").ToLocalChecked(), interface,
+                     setInterface);
+    Nan::SetAccessor(otl, Nan::New("promiscuous").ToLocalChecked(), promiscuous,
+                     setPromiscuous);
+    Nan::SetAccessor(otl, Nan::New("snaplen").ToLocalChecked(), snaplen,
+                     setSnaplen);
+    SetPrototypeMethod(tpl, "setBPF", setBPF);
+    SetPrototypeMethod(tpl, "start", start);
+    SetPrototypeMethod(tpl, "stop", stop);
     constructor().Reset(Nan::GetFunction(tpl).ToLocalChecked());
     Nan::Set(target, Nan::New("Session").ToLocalChecked(),
              Nan::GetFunction(tpl).ToLocalChecked());
@@ -115,13 +124,62 @@ public:
 
   static NAN_GETTER(permission) {
     SessionWrapper *wrapper = ObjectWrap::Unwrap<SessionWrapper>(info.Holder());
-    info.GetReturnValue().Set(
-        Nan::New(wrapper->session->permission()));
+    info.GetReturnValue().Set(Nan::New(wrapper->session->permission()));
   }
 
   static NAN_GETTER(devices) {
     SessionWrapper *wrapper = ObjectWrap::Unwrap<SessionWrapper>(info.Holder());
     info.GetReturnValue().Set(wrapper->session->devices());
+  }
+
+  static NAN_GETTER(interface) {
+    SessionWrapper *wrapper = ObjectWrap::Unwrap<SessionWrapper>(info.Holder());
+    info.GetReturnValue().Set(
+        Nan::New<v8::String>(wrapper->session->interface()).ToLocalChecked());
+  }
+
+  static NAN_SETTER(setInterface) {
+    SessionWrapper *wrapper = ObjectWrap::Unwrap<SessionWrapper>(info.Holder());
+    wrapper->session->setInterface(*Nan::Utf8String(value));
+  }
+
+  static NAN_GETTER(promiscuous) {
+    SessionWrapper *wrapper = ObjectWrap::Unwrap<SessionWrapper>(info.Holder());
+    info.GetReturnValue().Set(wrapper->session->promiscuous());
+  }
+
+  static NAN_SETTER(setPromiscuous) {
+    SessionWrapper *wrapper = ObjectWrap::Unwrap<SessionWrapper>(info.Holder());
+    wrapper->session->setPromiscuous(value->BooleanValue());
+  }
+
+  static NAN_GETTER(snaplen) {
+    SessionWrapper *wrapper = ObjectWrap::Unwrap<SessionWrapper>(info.Holder());
+    info.GetReturnValue().Set(wrapper->session->snaplen());
+  }
+
+  static NAN_SETTER(setSnaplen) {
+    SessionWrapper *wrapper = ObjectWrap::Unwrap<SessionWrapper>(info.Holder());
+    wrapper->session->setSnaplen(value->IntegerValue());
+  }
+
+  static NAN_METHOD(setBPF) {
+    SessionWrapper *wrapper = ObjectWrap::Unwrap<SessionWrapper>(info.Holder());
+    const std::string &bpf = *Nan::Utf8String(info[0]);
+    std::string err;
+    if (!wrapper->session->setBPF(bpf, &err)) {
+      Nan::ThrowSyntaxError(err.c_str());
+    }
+  }
+
+  static NAN_METHOD(start) {
+    SessionWrapper *wrapper = ObjectWrap::Unwrap<SessionWrapper>(info.Holder());
+    wrapper->session->start();
+  }
+
+  static NAN_METHOD(stop) {
+    SessionWrapper *wrapper = ObjectWrap::Unwrap<SessionWrapper>(info.Holder());
+    wrapper->session->stop();
   }
 
   static inline Nan::Persistent<v8::Function> &constructor() {

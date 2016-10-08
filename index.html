@@ -53,6 +53,7 @@
         sess.filter('pkt2', '{');
         console.log(sess.permission);
         console.log(sess.devices);
+        console.log(sess);
 
         let i = 1;
         sess.on('packets', (stat) => {
