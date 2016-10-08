@@ -10,7 +10,6 @@ addons:
     - g++-5
     - jq
     - libcap-dev
-    - libpcap-dev
 language: node_js
 node_js:
 - "6"

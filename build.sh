@@ -9,6 +9,10 @@ if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then
 
   export ELECTRON_VERSION=`jq .devDependencies.electron package.json -r`
   echo $ELECTRON_VERSION
+
+  curl -O https://dripcap.org/storage/libpcap-1.7.4.tar.gz
+  tar xzf libpcap-1.7.4.tar.gz
+  (cd libpcap-1.7.4 && ./configure -q --enable-shared=no && make -j2 && sudo make install)
 fi
 
 if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then
