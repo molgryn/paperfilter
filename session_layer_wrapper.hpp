@@ -2,6 +2,7 @@
 #define LAYER_WRAPPER_HPP
 
 #include "layer.hpp"
+#include "session_item_wrapper.hpp"
 #include <nan.h>
 #include <node_buffer.h>
 #include <v8pp/class.hpp>
@@ -23,6 +24,7 @@ public:
     Nan::SetAccessor(otl, Nan::New("name").ToLocalChecked(), name);
     Nan::SetAccessor(otl, Nan::New("summary").ToLocalChecked(), summary);
     Nan::SetAccessor(otl, Nan::New("layers").ToLocalChecked(), layers);
+    Nan::SetAccessor(otl, Nan::New("items").ToLocalChecked(), items);
     Nan::SetAccessor(otl, Nan::New("extension").ToLocalChecked(), extension);
     constructor().Reset(Nan::GetFunction(tpl).ToLocalChecked());
   }
@@ -83,6 +85,21 @@ public:
       }
 
       info.GetReturnValue().Set(obj);
+    }
+  }
+
+  static NAN_GETTER(items) {
+    v8::Isolate *isolate = v8::Isolate::GetCurrent();
+    SessionLayerWrapper *wrapper =
+        ObjectWrap::Unwrap<SessionLayerWrapper>(info.Holder());
+
+    if (const std::shared_ptr<const Layer> &layer = wrapper->layer.lock()) {
+      const auto &items = layer->items();
+      v8::Local<v8::Array> array = v8::Array::New(isolate, items.size());
+      for (size_t i = 0; i < items.size(); ++i) {
+        array->Set(i, SessionItemWrapper::create(*items[i]));
+      }
+      info.GetReturnValue().Set(array);
     }
   }
 
