@@ -9,8 +9,7 @@
     "bindings": "~1.2.1",
     "esprima": "^3.0.0",
     "rollup": "^0.36.1",
-    "rollup-plugin-babel": "^2.6.1",
-    "tmp": "0.0.29"
+    "rollup-plugin-babel": "^2.6.1"
   },
   "scripts": {
     "install": "make",

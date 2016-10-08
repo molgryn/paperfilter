@@ -1,6 +1,5 @@
 const nylonfilter = require('bindings')('nylonfilter');
 const EventEmitter = require('events');
-const tmp = require('tmp');
 const rollup = require('rollup').rollup;
 const babel = require('rollup-plugin-babel');
 
@@ -21,7 +20,6 @@ class Session extends EventEmitter {
 
   static create(option) {
     let sessOption = {
-      tmp: tmp.dirSync().name,
       namespace: option.namespace,
       dissectors: [],
       stream_dissectors: []

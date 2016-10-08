@@ -31,7 +31,6 @@ public:
   void error(const std::string &err);
 
 public:
-  std::string tmpDir;
   PacketQueue queue;
   PacketStore store;
   std::vector<std::unique_ptr<DissectorThread>> dissectorThreads;
@@ -128,9 +127,6 @@ Session::Session(v8::Local<v8::Value> option) : d(new Private()) {
   Isolate *isolate = Isolate::GetCurrent();
   Local<Object> opt = option.As<Object>();
   v8pp::get_option(isolate, opt, "namespace", d->ns);
-  v8pp::get_option(isolate, opt, "tmp", d->tmpDir);
-
-  printf("tmp: %s\n", d->tmpDir.c_str());
 
   Local<Array> dissectorArray;
   std::vector<Dissector> dissectors;
@@ -173,7 +169,6 @@ Session::Session(v8::Local<v8::Value> option) : d(new Private()) {
   }
 
   auto streamCtx = std::make_shared<StreamDispatcher::Context>();
-  streamCtx->tmpDir = d->tmpDir;
   streamCtx->dissectors.swap(streamDissectors);
   streamCtx->errorCb =
       std::bind(&Private::error, std::ref(d), std::placeholders::_1);

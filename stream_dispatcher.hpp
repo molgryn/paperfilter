@@ -12,7 +12,6 @@ class VirtualPacket;
 class StreamDispatcher {
 public:
   struct Context {
-    std::string tmpDir;
     std::vector<Dissector> dissectors;
     std::function<void(std::string)> errorCb;
     std::function<void(std::vector<std::unique_ptr<StreamChunk>>)> streamsCb;

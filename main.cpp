@@ -2,6 +2,7 @@
 #include "session_packet_wrapper.hpp"
 #include "session_item_wrapper.hpp"
 #include "session_wrapper.hpp"
+#include "large_buffer.hpp"
 #include <nan.h>
 
 #include <execinfo.h>
