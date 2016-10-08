@@ -192,6 +192,9 @@ Session::Session(v8::Local<v8::Value> option) : d(new Private()) {
   auto pcapCtx = std::make_shared<Pcap::Context>();
   pcapCtx->errorCb =
       std::bind(&Private::error, std::ref(d), std::placeholders::_1);
+  pcapCtx->packetCb = [this](std::unique_ptr<Packet> pkt) {
+    d->queue.push(std::move(pkt));
+  };
   d->pcap.reset(new Pcap(pcapCtx));
 }
 

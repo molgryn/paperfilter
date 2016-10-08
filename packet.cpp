@@ -6,6 +6,7 @@
 #include <node_buffer.h>
 #include <v8pp/class.hpp>
 #include <v8pp/object.hpp>
+#include <pcap.h>
 
 using namespace v8;
 
@@ -51,6 +52,17 @@ Packet::Packet(const VirtualPacket &vp) : d(new Private()) {
   d->payload->freeze();
   d->length = 0;
   addLayer(std::make_shared<Layer>(vp.ns()));
+}
+
+Packet::Packet(const struct pcap_pkthdr *h, const uint8_t *bytes) : d(new Private())
+{
+  d->ts_sec = h->ts.tv_sec;
+  d->ts_nsec = h->ts.tv_usec;
+  d->length = h->len;
+  auto buffer = std::make_shared<std::vector<char>>();
+  buffer->assign(bytes, bytes + h->caplen);
+  d->payload.reset(new Buffer(buffer));
+  d->payload->freeze();
 }
 
 Packet::~Packet() {}
