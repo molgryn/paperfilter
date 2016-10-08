@@ -5,7 +5,7 @@ if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then
   export CXX=g++-5
   export DISPLAY=:99.0
   sh -e /etc/init.d/xvfb start +extension RANDR;
-  sleep 30
+  sleep 3
 
   export ELECTRON_VERSION=`jq .devDependencies.electron package.json -r`
   echo $ELECTRON_VERSION

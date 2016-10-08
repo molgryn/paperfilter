@@ -42,8 +42,8 @@
                   "include_dirs":[
                     "linux"
                   ],
-                  "ldflags": [
-                    "-lcap"
+                  "libraries": [
+                    "-Wl,-dn,-lpcap,-lcap,-lrt,-dy,-lpthread,-ldl"
                   ]
                }
             ],
@@ -55,6 +55,10 @@
                   ],
                   "include_dirs":[
                     "darwin"
+                  ],
+                  "libraries": [
+                    "-L/usr/local/lib",
+                    "-lpcap"
                   ],
                   "xcode_settings":{
                      "MACOSX_DEPLOYMENT_TARGET":"10.9",
