@@ -20,6 +20,9 @@ void NylonContext::init(v8::Isolate *isolate) {
 
   v8pp::class_<VirtualPacket> VirtualPacket_class(isolate);
   VirtualPacket_class.ctor<const std::string &>();
+  VirtualPacket_class.set("payload",
+                          v8pp::property(&VirtualPacket::payloadBuffer,
+                                         &VirtualPacket::setPayloadBuffer));
 
   v8pp::class_<Buffer> Buffer_class(isolate);
   Buffer_class.ctor<const v8::FunctionCallbackInfo<v8::Value> &>();

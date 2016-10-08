@@ -15,6 +15,7 @@ public:
   std::string ns() const;
 
   std::unique_ptr<Buffer> payload() const;
+  void setPayloadBuffer(v8::Local<v8::Object>);
   v8::Local<v8::Object> payloadBuffer() const;
 
 private:

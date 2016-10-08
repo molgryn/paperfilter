@@ -55,7 +55,7 @@
         let i = 1;
         sess.on('packets', (stat) => {
           console.log(stat);
-          console.log(sess.get(i++));
+          console.log(sess.get(stat));
           document.getElementById("aa").appendChild(document.createTextNode(sess.namespace));
         })
         sess.on('filter', (name, packets) => {

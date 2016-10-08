@@ -8,6 +8,7 @@ export default class Dissector {
     this.basePackets.push(packet.seq);
     if (this.basePackets.length > 3) {
       let vp = new VirtualPacket('::Ethernet::TCP::HTTP');
+      vp.payload = packet.payload;
       let pkt = new StreamChunk('::Ethernet::TCP::XXX', 'tgrtdd' + Math.floor(Math.random() * 5));
       return [vp, pkt];
     }
