@@ -5,15 +5,6 @@
 #include <iomanip>
 #include <sys/stat.h>
 
-struct Cleanup {
-  ~Cleanup() {
-    printf("%s\n", "xxxx");
-    printf("%s\n", LargeBuffer::tmpDir().c_str());
-  }
-};
-
-static Cleanup clean;
-
 std::string LargeBuffer::tmpDir() {
   atexit ([](){
     printf("%s\n", "atexit");
