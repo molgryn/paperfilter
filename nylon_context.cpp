@@ -53,6 +53,9 @@ void NylonContext::init(v8::Isolate *isolate) {
 
   v8pp::class_<Item> Item_class(isolate);
   Item_class.ctor<>();
+  Item_class.set("name", v8pp::property(&Item::name, &Item::setName));
+  Item_class.set("attr", v8pp::property(&Item::attr, &Item::setAttr));
+  Item_class.set("range", v8pp::property(&Item::range, &Item::setRange));
 
   v8pp::class_<ItemValue> ItemValue_class(isolate);
   ItemValue_class.ctor<const v8::FunctionCallbackInfo<v8::Value> &>();

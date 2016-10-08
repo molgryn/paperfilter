@@ -11,7 +11,7 @@ public:
   std::string attr;
   std::string range;
   std::unique_ptr<ItemValue> value;
-  std::vector<std::unique_ptr<Item>> children;
+  std::vector<Item> children;
 };
 
 Item::Item() : d(new Private()) {}
@@ -23,7 +23,7 @@ Item::Item(const Item &item) : d(new Private()) {
   if (item.d->value)
     d->value.reset(new ItemValue(*item.d->value));
   for (const auto &child : item.d->children) {
-    d->children.emplace_back(new Item(*child));
+    d->children.emplace_back(child);
   }
 }
 
@@ -57,13 +57,11 @@ void Item::setValue(v8::Local<v8::Object> value) {
   }
 }
 
-const std::vector<std::unique_ptr<Item>> &Item::children() const {
-  return d->children;
-}
+std::vector<Item> Item::children() const { return d->children; }
 
 void Item::addChild(v8::Local<v8::Object> obj) {
   Isolate *isolate = Isolate::GetCurrent();
   if (Item *item = v8pp::class_<Item>::unwrap_object(isolate, obj)) {
-    d->children.emplace_back(new Item(*item));
+    d->children.emplace_back(*item);
   }
 }

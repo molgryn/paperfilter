@@ -31,7 +31,7 @@ public:
   std::shared_ptr<Packet> packet() const;
 
   void addItem(v8::Local<v8::Object> obj);
-  const std::vector<std::unique_ptr<Item>> &items() const;
+  std::vector<Item> items() const;
 
 private:
   class Private;

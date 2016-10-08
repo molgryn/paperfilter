@@ -21,7 +21,7 @@ public:
   v8::Local<v8::Object> value() const;
   void setValue(v8::Local<v8::Object> value);
 
-  const std::vector<std::unique_ptr<Item>> &children() const;
+  std::vector<Item> children() const;
   void addChild(v8::Local<v8::Object> obj);
 
 private:

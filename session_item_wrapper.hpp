@@ -3,6 +3,7 @@
 
 #include "item.hpp"
 #include <nan.h>
+#include <v8pp/class.hpp>
 
 class SessionItemWrapper : public Nan::ObjectWrap {
 private:
@@ -16,6 +17,9 @@ public:
     tpl->InstanceTemplate()->SetInternalFieldCount(1);
     tpl->SetClassName(Nan::New("Item").ToLocalChecked());
     v8::Local<v8::ObjectTemplate> otl = tpl->InstanceTemplate();
+    Nan::SetAccessor(otl, Nan::New("name").ToLocalChecked(), name);
+    Nan::SetAccessor(otl, Nan::New("attr").ToLocalChecked(), attr);
+    Nan::SetAccessor(otl, Nan::New("range").ToLocalChecked(), range);
     constructor().Reset(Nan::GetFunction(tpl).ToLocalChecked());
   }
 
@@ -26,7 +30,28 @@ public:
     return my_constructor;
   }
 
-  static v8::Local<v8::Object> create(Item item) {
+  static NAN_GETTER(name) {
+    SessionItemWrapper *wrapper =
+        ObjectWrap::Unwrap<SessionItemWrapper>(info.Holder());
+    info.GetReturnValue().Set(
+        v8pp::to_v8(v8::Isolate::GetCurrent(), wrapper->item.name()));
+  }
+
+  static NAN_GETTER(attr) {
+    SessionItemWrapper *wrapper =
+        ObjectWrap::Unwrap<SessionItemWrapper>(info.Holder());
+    info.GetReturnValue().Set(
+        v8pp::to_v8(v8::Isolate::GetCurrent(), wrapper->item.attr()));
+  }
+
+  static NAN_GETTER(range) {
+    SessionItemWrapper *wrapper =
+        ObjectWrap::Unwrap<SessionItemWrapper>(info.Holder());
+    info.GetReturnValue().Set(
+        v8pp::to_v8(v8::Isolate::GetCurrent(), wrapper->item.range()));
+  }
+
+  static v8::Local<v8::Object> create(const Item &item) {
     v8::Local<v8::Function> cons = Nan::New(constructor());
     v8::Local<v8::Value> argv[1] = {
         v8::Isolate::GetCurrent()->GetCurrentContext()->Global()};

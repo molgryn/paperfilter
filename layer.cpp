@@ -12,7 +12,7 @@ public:
   std::string extension;
   std::unordered_map<std::string, std::shared_ptr<Layer>> layers;
   std::weak_ptr<Packet> pkt;
-  std::vector<std::unique_ptr<Item>> items;
+  std::vector<Item> items;
 };
 
 Layer::Layer(const std::string &ns) : d(std::make_shared<Private>()) {
@@ -52,10 +52,8 @@ std::shared_ptr<Packet> Layer::packet() const { return d->pkt.lock(); }
 void Layer::addItem(v8::Local<v8::Object> obj) {
   Isolate *isolate = Isolate::GetCurrent();
   if (Item *item = v8pp::class_<Item>::unwrap_object(isolate, obj)) {
-    d->items.emplace_back(new Item(*item));
+    d->items.emplace_back(*item);
   }
 }
 
-const std::vector<std::unique_ptr<Item>> &Layer::items() const {
-  return d->items;
-}
+std::vector<Item> Layer::items() const { return d->items; }

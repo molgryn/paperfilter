@@ -97,7 +97,7 @@ public:
       const auto &items = layer->items();
       v8::Local<v8::Array> array = v8::Array::New(isolate, items.size());
       for (size_t i = 0; i < items.size(); ++i) {
-        array->Set(i, SessionItemWrapper::create(*items[i]));
+        array->Set(i, SessionItemWrapper::create(items[i]));
       }
       info.GetReturnValue().Set(array);
     }
