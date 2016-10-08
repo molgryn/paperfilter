@@ -28,7 +28,8 @@ public:
     Nan::SetAccessor(otl, Nan::New("filterCallback").ToLocalChecked(),
                      filterCallback, setFilterCallback);
     Nan::SetAccessor(otl, Nan::New("namespace").ToLocalChecked(), ns);
-Nan::SetAccessor(otl, Nan::New("permission").ToLocalChecked(), permission);
+    Nan::SetAccessor(otl, Nan::New("permission").ToLocalChecked(), permission);
+    Nan::SetAccessor(otl, Nan::New("devices").ToLocalChecked(), devices);
     constructor().Reset(Nan::GetFunction(tpl).ToLocalChecked());
     Nan::Set(target, Nan::New("Session").ToLocalChecked(),
              Nan::GetFunction(tpl).ToLocalChecked());
@@ -116,6 +117,11 @@ Nan::SetAccessor(otl, Nan::New("permission").ToLocalChecked(), permission);
     SessionWrapper *wrapper = ObjectWrap::Unwrap<SessionWrapper>(info.Holder());
     info.GetReturnValue().Set(
         Nan::New(wrapper->session->permission()));
+  }
+
+  static NAN_GETTER(devices) {
+    SessionWrapper *wrapper = ObjectWrap::Unwrap<SessionWrapper>(info.Holder());
+    info.GetReturnValue().Set(wrapper->session->devices());
   }
 
   static inline Nan::Persistent<v8::Function> &constructor() {

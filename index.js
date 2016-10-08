@@ -92,6 +92,10 @@ class Session extends EventEmitter {
   get permission() {
     return this.sess.permission;
   }
+
+  get devices() {
+    return this.sess.devices;
+  }
 }
 
 module.exports = {

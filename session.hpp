@@ -30,6 +30,8 @@ public:
   std::string ns() const;
   bool permission() const;
 
+  v8::Local<v8::Array> devices() const;
+
 private:
   class Private;
   std::unique_ptr<Private> d;

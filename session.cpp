@@ -15,6 +15,7 @@
 #include "filter_thread.hpp"
 #include "layer.hpp"
 #include "permission.hpp"
+#include "pcap.hpp"
 
 using namespace v8;
 
@@ -45,6 +46,7 @@ public:
   uv_async_t errorCbAsync;
 
   std::unique_ptr<StreamDispatcher> streamDispatcher;
+  std::unique_ptr<Pcap> pcap;
 
   std::mutex errorMutex;
   std::unordered_set<std::string> recentErrors;
@@ -186,6 +188,11 @@ Session::Session(v8::Local<v8::Value> option) : d(new Private()) {
     }
   };
   d->streamDispatcher.reset(new StreamDispatcher(streamCtx));
+
+  auto pcapCtx = std::make_shared<Pcap::Context>();
+  pcapCtx->errorCb =
+      std::bind(&Private::error, std::ref(d), std::placeholders::_1);
+  d->pcap.reset(new Pcap(pcapCtx));
 }
 
 Session::~Session() {}
@@ -246,4 +253,22 @@ std::string Session::ns() const { return d->ns; }
 bool Session::permission() const
 {
   return Permission::test();
+}
+
+v8::Local<v8::Array> Session::devices() const
+{
+  Isolate *isolate = Isolate::GetCurrent();
+  const std::vector<Pcap::Device> &devs = d->pcap->devices();
+  v8::Local<v8::Array> array = v8::Array::New(isolate, devs.size());
+  for (size_t i = 0; i < devs.size(); ++i) {
+    const Pcap::Device& dev = devs[i];
+    v8::Local<v8::Object> obj = v8::Object::New(isolate);
+    v8pp::set_option(isolate, obj, "id", dev.id);
+    v8pp::set_option(isolate, obj, "name", dev.name);
+    v8pp::set_option(isolate, obj, "description", dev.description);
+    v8pp::set_option(isolate, obj, "link", dev.link);
+    v8pp::set_option(isolate, obj, "loopback", dev.loopback);
+    array->Set(i, obj);
+  }
+  return array;
 }
