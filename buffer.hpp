@@ -7,7 +7,7 @@
 
 class Buffer {
 public:
-  Buffer(const std::shared_ptr<const std::vector<char>> &source);
+  Buffer(const std::shared_ptr<std::vector<char>> &source);
   explicit Buffer(const v8::FunctionCallbackInfo<v8::Value> &args);
   ~Buffer();
   Buffer(const Buffer &) = delete;
@@ -29,6 +29,8 @@ public:
   void indexOf(const v8::FunctionCallbackInfo<v8::Value> &args) const;
   std::string valueOf() const;
   const char *data(size_t offset = 0) const;
+
+  void freeze();
 
 public:
   static void from(const v8::FunctionCallbackInfo<v8::Value> &args);

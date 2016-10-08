@@ -42,7 +42,8 @@ public:
   ~Private();
 
 public:
-  std::shared_ptr<const std::vector<char>> source;
+  std::shared_ptr<std::vector<char>> source;
+  std::shared_ptr<bool> readonly = std::make_shared<bool>(false);
   size_t start = 0;
   size_t end = 0;
 };
@@ -51,7 +52,7 @@ Buffer::Private::Private() {}
 
 Buffer::Private::~Private() {}
 
-Buffer::Buffer(const std::shared_ptr<const std::vector<char>> &source)
+Buffer::Buffer(const std::shared_ptr<std::vector<char>> &source)
     : d(new Private()) {
   d->source = source;
   d->end = d->source->size();
@@ -109,6 +110,7 @@ size_t Buffer::length() const { return d->end - d->start; }
 
 std::unique_ptr<Buffer> Buffer::slice(size_t start, size_t end) const {
   std::unique_ptr<Buffer> buf(new Buffer(d->source));
+  buf->d->readonly = d->readonly;
   buf->d->start = std::min(buf->d->start + start, d->source->size());
   buf->d->end = std::min(buf->d->start + (end - start), buf->d->end);
   return buf;
@@ -270,3 +272,5 @@ void Buffer::from(const v8::FunctionCallbackInfo<v8::Value> &args) {
 bool Buffer::isBuffer(const v8::Local<v8::Value> &value) {
   return v8pp::class_<Buffer>::unwrap_object(Isolate::GetCurrent(), value);
 }
+
+void Buffer::freeze() { *d->readonly = true; }

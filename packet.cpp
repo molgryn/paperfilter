@@ -21,7 +21,7 @@ public:
   uint32_t length = 0;
   std::string summary;
   std::string extension;
-  std::shared_ptr<const std::vector<char>> payload;
+  std::shared_ptr<std::vector<char>> payload;
   std::unordered_map<std::string, std::shared_ptr<Layer>> layers;
 };
 
