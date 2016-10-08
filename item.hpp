@@ -4,10 +4,12 @@
 #include <memory>
 #include <string>
 #include <v8.h>
+#include <vector>
 
 class Item {
 public:
   Item();
+  Item(const Item &item);
   ~Item();
 
   std::string name() const;
@@ -19,8 +21,8 @@ public:
   v8::Local<v8::Object> value() const;
   void setValue(v8::Local<v8::Object> value);
 
-  v8::Local<v8::Array> children() const;
-  void addChild(v8::Local<v8::Object> item);
+  const std::vector<std::unique_ptr<Item>> &children() const;
+  void addChild(v8::Local<v8::Object> obj);
 
 private:
   class Private;
