@@ -9,6 +9,7 @@
 
 class Layer;
 class VirtualPacket;
+class Buffer;
 
 class Packet {
 public:
@@ -27,7 +28,7 @@ public:
   std::string summary() const;
   std::string extension() const;
 
-  std::shared_ptr<const std::vector<char>> payload() const;
+  std::unique_ptr<Buffer> payload() const;
   v8::Local<v8::Object> payloadBuffer() const;
 
   void addLayer(const std::shared_ptr<Layer> &layer);

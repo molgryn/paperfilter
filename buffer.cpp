@@ -42,7 +42,8 @@ public:
   ~Private();
 
 public:
-  std::shared_ptr<std::vector<char>> source;
+  std::shared_ptr<std::vector<char>> source =
+      std::make_shared<std::vector<char>>();
   std::shared_ptr<bool> readonly = std::make_shared<bool>(false);
   size_t start = 0;
   size_t end = 0;
@@ -51,6 +52,8 @@ public:
 Buffer::Private::Private() {}
 
 Buffer::Private::~Private() {}
+
+Buffer::Buffer() : d(new Private()) {}
 
 Buffer::Buffer(const std::shared_ptr<std::vector<char>> &source)
     : d(new Private()) {

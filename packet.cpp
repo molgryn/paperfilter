@@ -21,7 +21,7 @@ public:
   uint32_t length = 0;
   std::string summary;
   std::string extension;
-  std::shared_ptr<std::vector<char>> payload;
+  std::unique_ptr<Buffer> payload;
   std::unordered_map<std::string, std::shared_ptr<Layer>> layers;
 };
 
@@ -41,12 +41,14 @@ Packet::Packet(v8::Local<v8::Object> option) : d(new Private()) {
     auto buffer = std::make_shared<std::vector<char>>();
     buffer->assign(node::Buffer::Data(payload),
                    node::Buffer::Data(payload) + node::Buffer::Length(payload));
-    d->payload = buffer;
+    d->payload.reset(new Buffer(buffer));
+    d->payload->freeze();
   }
 }
 
 Packet::Packet(const VirtualPacket &vp) : d(new Private()) {
-  d->payload = std::make_shared<std::vector<char>>();
+  d->payload = vp.payload();
+  d->payload->freeze();
   d->length = 0;
   addLayer(std::make_shared<Layer>(vp.ns()));
 }
@@ -67,13 +69,12 @@ std::string Packet::extension() const { return d->extension; }
 
 uint32_t Packet::length() const { return d->length; }
 
-std::shared_ptr<const std::vector<char>> Packet::payload() const {
-  return d->payload;
-}
+std::unique_ptr<Buffer> Packet::payload() const { return d->payload->slice(); }
 
 v8::Local<v8::Object> Packet::payloadBuffer() const {
   Isolate *isolate = Isolate::GetCurrent();
-  return v8pp::class_<Buffer>::create_object(isolate, d->payload);
+  return v8pp::class_<Buffer>::import_external(isolate,
+                                               d->payload->slice().release());
 }
 
 void Packet::addLayer(const std::shared_ptr<Layer> &layer) {

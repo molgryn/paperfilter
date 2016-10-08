@@ -7,6 +7,7 @@
 
 class Buffer {
 public:
+  Buffer();
   Buffer(const std::shared_ptr<std::vector<char>> &source);
   explicit Buffer(const v8::FunctionCallbackInfo<v8::Value> &args);
   ~Buffer();

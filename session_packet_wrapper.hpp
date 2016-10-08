@@ -2,6 +2,7 @@
 #define PACKET_WRAPPER_HPP
 
 #include "packet.hpp"
+#include "buffer.hpp"
 #include "session_layer_wrapper.hpp"
 #include <nan.h>
 #include <node_buffer.h>
@@ -65,15 +66,14 @@ public:
         ObjectWrap::Unwrap<SessionPacketWrapper>(info.Holder());
 
     if (const std::shared_ptr<const Packet> &pkt = wrapper->pkt.lock()) {
-      std::shared_ptr<const std::vector<char>> payload = pkt->payload();
+      Buffer *buf = pkt->payload().release();
       v8::Local<v8::Object> buffer =
-          node::Buffer::New(
-              isolate, const_cast<char *>(payload->data()), payload->size(),
-              [](char *data, void *hint) {
-                delete static_cast<std::shared_ptr<const std::vector<char>> *>(
-                    hint);
-              },
-              new std::shared_ptr<const std::vector<char>>(payload))
+          node::Buffer::New(isolate, const_cast<char *>(buf->data()),
+                            buf->length(),
+                            [](char *data, void *hint) {
+                              delete static_cast<Buffer *>(hint);
+                            },
+                            buf)
               .ToLocalChecked();
       info.GetReturnValue().Set(buffer);
     }
