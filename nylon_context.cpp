@@ -64,7 +64,8 @@ void NylonContext::init(v8::Isolate *isolate) {
   dripcap.set("VirtualPacket", VirtualPacket_class);
 
   Local<FunctionTemplate> require = FunctionTemplate::New(
-      isolate, [](FunctionCallbackInfo<Value> const &args) {
+      isolate,
+      [](FunctionCallbackInfo<Value> const &args) {
         Isolate *isolate = Isolate::GetCurrent();
         const std::string &name =
             v8pp::from_v8<std::string>(isolate, args[0], "");
@@ -75,7 +76,8 @@ void NylonContext::init(v8::Isolate *isolate) {
           args.GetReturnValue().Set(
               v8pp::throw_ex(isolate, (err + name + "'").c_str()));
         }
-      }, dripcap.new_instance());
+      },
+      dripcap.new_instance());
 
   isolate->GetCurrentContext()->Global()->Set(
       v8::String::NewFromUtf8(isolate, "require"), require->GetFunction());

@@ -1,8 +1,8 @@
 #ifndef PCAP_HPP
 #define PCAP_HPP
 
-#include <memory>
 #include <functional>
+#include <memory>
 #include <string>
 #include <vector>
 

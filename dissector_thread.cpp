@@ -1,15 +1,15 @@
 #include "dissector_thread.hpp"
-#include <unordered_set>
-#include <thread>
+#include "layer.hpp"
+#include "nylon_context.hpp"
+#include "packet.hpp"
+#include "packet_queue.hpp"
+#include "stream_chunk.hpp"
 #include <cstdlib>
 #include <nan.h>
+#include <thread>
+#include <unordered_set>
 #include <v8.h>
 #include <v8pp/class.hpp>
-#include "packet.hpp"
-#include "layer.hpp"
-#include "stream_chunk.hpp"
-#include "packet_queue.hpp"
-#include "nylon_context.hpp"
 
 using namespace v8;
 

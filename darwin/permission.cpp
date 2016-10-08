@@ -1,10 +1,10 @@
 #include "permission.hpp"
 #include <cstdlib>
 #include <dirent.h>
+#include <string>
 #include <sys/stat.h>
 #include <sys/sysctl.h>
 #include <unistd.h>
-#include <string>
 
 bool Permission::test() {
   DIR *dp = opendir("/dev");

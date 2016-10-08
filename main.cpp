@@ -3,8 +3,8 @@
 #include "session_wrapper.hpp"
 #include <nan.h>
 
-#include <signal.h>
 #include <execinfo.h>
+#include <signal.h>
 #include <sys/stat.h>
 #include <sys/un.h>
 #include <unistd.h>

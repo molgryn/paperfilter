@@ -8,20 +8,12 @@
 
 class ItemValue::Private {
 public:
-  Private();
-  ~Private();
-
-public:
   BaseType base = NUL;
   double num;
   std::string str;
-  std::shared_ptr<Buffer> buf;
+  std::unique_ptr<Buffer> buf;
   std::string type;
 };
-
-ItemValue::Private::Private() {}
-
-ItemValue::Private::~Private() {}
 
 ItemValue::ItemValue(const v8::FunctionCallbackInfo<v8::Value> &args)
     : d(new Private()) {
@@ -40,6 +32,7 @@ ItemValue::ItemValue(const v8::FunctionCallbackInfo<v8::Value> &args)
     } else if (val->IsObject()) {
       if (Buffer *buffer = v8pp::class_<Buffer>::unwrap_object(isolate, val)) {
         d->buf = buffer->slice();
+        d->buf->freeze();
         d->base = BUFFER;
       } else {
         d->str = v8pp::json_str(isolate, val);
@@ -47,6 +40,15 @@ ItemValue::ItemValue(const v8::FunctionCallbackInfo<v8::Value> &args)
       }
     }
   }
+}
+
+ItemValue::ItemValue(const ItemValue &value) : d(new Private()) {
+  d->base = value.d->base;
+  d->num = value.d->num;
+  d->str = value.d->str;
+  d->buf = value.d->buf->slice();
+  d->buf->freeze();
+  d->type = value.d->type;
 }
 
 ItemValue::~ItemValue() {}
@@ -67,12 +69,12 @@ v8::Local<v8::Value> ItemValue::value() const {
   case BUFFER:
     if (d->buf) {
       if (isolate->GetData(1)) { // node.js
-        val = node::Buffer::New(
-                  isolate, const_cast<char *>(d->buf->data()), d->buf->length(),
-                  [](char *data, void *hint) {
-                    delete static_cast<std::shared_ptr<const Buffer> *>(hint);
-                  },
-                  new std::shared_ptr<const Buffer>(d->buf))
+        val = node::Buffer::New(isolate, const_cast<char *>(d->buf->data()),
+                                d->buf->length(),
+                                [](char *data, void *hint) {
+                                  delete static_cast<Buffer *>(hint);
+                                },
+                                d->buf->slice().release())
                   .ToLocalChecked();
       } else { // dissector
         val = v8pp::class_<Buffer>::import_external(isolate,

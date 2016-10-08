@@ -7,6 +7,7 @@
             "buffer.cpp",
             "large_buffer.cpp",
             "layer.cpp",
+            "item.cpp",
             "item_value.cpp",
             "session.cpp",
             "packet.cpp",

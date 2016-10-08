@@ -1,8 +1,8 @@
 #ifndef PACKET_WRAPPER_HPP
 #define PACKET_WRAPPER_HPP
 
-#include "packet.hpp"
 #include "buffer.hpp"
+#include "packet.hpp"
 #include "session_layer_wrapper.hpp"
 #include <nan.h>
 #include <node_buffer.h>

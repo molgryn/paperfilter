@@ -13,6 +13,7 @@ public:
 
 public:
   explicit ItemValue(const v8::FunctionCallbackInfo<v8::Value> &args);
+  ItemValue(const ItemValue &value);
   ~ItemValue();
   v8::Local<v8::Value> value() const;
   std::string type() const;
