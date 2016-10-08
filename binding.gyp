@@ -37,7 +37,8 @@
                "OS=='linux'",
                {
                   "sources":[
-                    "linux/permission.cpp"
+                    "linux/permission.cpp",
+                    "linux/pcap.cpp"
                   ],
                   "include_dirs":[
                     "linux"
@@ -51,7 +52,8 @@
                "OS=='mac'",
                {
                   "sources":[
-                    "darwin/permission.cpp"
+                    "darwin/permission.cpp",
+                    "darwin/pcap.cpp"
                   ],
                   "include_dirs":[
                     "darwin"

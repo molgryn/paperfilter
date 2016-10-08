@@ -12,7 +12,7 @@ if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then
 fi
 
 if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then
-  brew update
+  brew update > /dev/null
   brew install jq
 
   export ELECTRON_VERSION=`jq .devDependencies.electron package.json -r`
