@@ -5,8 +5,10 @@
 #include <string>
 #include <unordered_map>
 #include <vector>
+#include <v8.h>
 
 class Packet;
+class Item;
 
 class Layer {
 public:
@@ -27,6 +29,9 @@ public:
 
   void setPacket(const std::shared_ptr<Packet> &pkt);
   std::shared_ptr<Packet> packet() const;
+
+  void addItem(v8::Local<v8::Object> obj);
+  const std::vector<std::unique_ptr<Item>> &items() const;
 
 private:
   class Private;

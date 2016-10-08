@@ -49,6 +49,7 @@ void NylonContext::init(v8::Isolate *isolate) {
                   v8pp::property(&Layer::summary, &Layer::setSummary));
   Layer_class.set("extension",
                   v8pp::property(&Layer::extension, &Layer::setExtension));
+  Layer_class.set("addItem", &Layer::addItem);
 
   v8pp::class_<Item> Item_class(isolate);
   Item_class.ctor<>();

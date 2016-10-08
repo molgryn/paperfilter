@@ -10,7 +10,6 @@
 class Layer;
 class VirtualPacket;
 class Buffer;
-class Item;
 struct pcap_pkthdr;
 
 class Packet {
@@ -36,9 +35,6 @@ public:
 
   void addLayer(const std::shared_ptr<Layer> &layer);
   const std::unordered_map<std::string, std::shared_ptr<Layer>> &layers() const;
-
-  void addItem(v8::Local<v8::Object> option);
-  const std::vector<std::unique_ptr<Item>> &items() const;
 
 private:
   class Private;

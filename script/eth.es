@@ -5,6 +5,8 @@ export default class Dissector {
     let layer = new Layer('::Ethernet');
     layer.summary = '' + Math.random();
     let item = new Item();
+    item.name = "aaa";
+    layer.addItem(item);
     return [layer];
   }
 };
