@@ -15,11 +15,13 @@ public:
   std::string id() const;
   void write(const v8::FunctionCallbackInfo<v8::Value> &args);
   void read(const v8::FunctionCallbackInfo<v8::Value> &args);
+
+private:
   static std::string tmpDir();
 
 private:
   class Private;
-  std::shared_ptr<Private> d;
+  std::unique_ptr<Private> d;
 };
 
 #endif

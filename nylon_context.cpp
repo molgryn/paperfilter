@@ -1,5 +1,6 @@
 #include "nylon_context.hpp"
 #include "buffer.hpp"
+#include "large_buffer.hpp"
 #include "item_value.hpp"
 #include "layer.hpp"
 #include "item.hpp"
@@ -66,6 +67,11 @@ void NylonContext::init(v8::Isolate *isolate) {
   StreamChunk_class.ctor<const std::string &, const std::string &>();
   StreamChunk_class.set("namespace", v8pp::property(&Layer::ns));
 
+  v8pp::class_<LargeBuffer> LargeBuffer_class(isolate);
+  LargeBuffer_class.ctor<>();
+  LargeBuffer_class.set("read", &LargeBuffer::read);
+  LargeBuffer_class.set("write", &LargeBuffer::write);
+
   v8pp::module dripcap(isolate);
   dripcap.set("Buffer", Buffer_class);
   dripcap.set("Layer", Layer_class);
@@ -73,6 +79,7 @@ void NylonContext::init(v8::Isolate *isolate) {
   dripcap.set("Value", ItemValue_class);
   dripcap.set("StreamChunk", StreamChunk_class);
   dripcap.set("VirtualPacket", VirtualPacket_class);
+  dripcap.set("LargeBuffer", LargeBuffer_class);
 
   Local<FunctionTemplate> require = FunctionTemplate::New(
       isolate, [](FunctionCallbackInfo<Value> const &args) {
