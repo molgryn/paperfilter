@@ -12,7 +12,7 @@ export default class Dissector {
     item2.value = new Value(false);
     item.addChild(item2);
     layer.addItem(item);
-    layer.setAttr("src", item2);
+    layer.setAttr("src", new Value(false));
     return [layer];
   }
 };

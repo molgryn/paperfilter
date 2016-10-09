@@ -1,8 +1,8 @@
 #include "dissector_thread.hpp"
 #include "layer.hpp"
-#include "paper_context.hpp"
 #include "packet.hpp"
 #include "packet_queue.hpp"
+#include "paper_context.hpp"
 #include "stream_chunk.hpp"
 #include <cstdlib>
 #include <nan.h>

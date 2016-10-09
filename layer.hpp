@@ -9,6 +9,7 @@
 
 class Packet;
 class Item;
+class ItemValue;
 
 class Layer {
 public:
@@ -34,7 +35,8 @@ public:
   std::vector<Item> items() const;
 
   void setAttr(const std::string &name, v8::Local<v8::Object> obj);
-  std::unordered_map<std::string, Item> attrs() const;
+  std::unordered_map<std::string, ItemValue> attrs() const;
+  v8::Local<v8::Object> attr(const std::string &name) const;
 
 private:
   class Private;

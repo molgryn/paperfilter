@@ -114,7 +114,7 @@ public:
       v8::Local<v8::Object> obj = v8::Object::New(isolate);
       for (const auto &pair : attrs) {
         obj->Set(v8pp::to_v8(isolate, pair.first),
-                 SessionItemWrapper::create(pair.second));
+                 SessionItemValueWrapper::create(pair.second));
       }
       info.GetReturnValue().Set(obj);
     }

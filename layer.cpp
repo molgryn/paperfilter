@@ -13,7 +13,7 @@ public:
   std::unordered_map<std::string, std::shared_ptr<Layer>> layers;
   std::weak_ptr<Packet> pkt;
   std::vector<Item> items;
-  std::unordered_map<std::string, Item> attrs;
+  std::unordered_map<std::string, ItemValue> attrs;
 };
 
 Layer::Layer(const std::string &ns) : d(std::make_shared<Private>()) {
@@ -61,9 +61,20 @@ std::vector<Item> Layer::items() const { return d->items; }
 
 void Layer::setAttr(const std::string &name, v8::Local<v8::Object> obj) {
   Isolate *isolate = Isolate::GetCurrent();
-  if (Item *item = v8pp::class_<Item>::unwrap_object(isolate, obj)) {
+  if (ItemValue *item = v8pp::class_<ItemValue>::unwrap_object(isolate, obj)) {
     d->attrs.emplace(name, *item);
   }
 }
 
-std::unordered_map<std::string, Item> Layer::attrs() const { return d->attrs; }
+std::unordered_map<std::string, ItemValue> Layer::attrs() const {
+  return d->attrs;
+}
+
+v8::Local<v8::Object> Layer::attr(const std::string &name) const {
+  const auto it = d->attrs.find(name);
+  if (it == d->attrs.end())
+    return v8::Local<v8::Object>();
+  Isolate *isolate = Isolate::GetCurrent();
+  return v8pp::class_<ItemValue>::import_external(isolate,
+                                                  new ItemValue(it->second));
+}

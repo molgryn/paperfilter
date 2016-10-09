@@ -1,7 +1,7 @@
 #include "filter_thread.hpp"
-#include "paper_context.hpp"
 #include "packet.hpp"
 #include "packet_store.hpp"
+#include "paper_context.hpp"
 #include <cstdlib>
 #include <nan.h>
 #include <thread>

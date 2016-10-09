@@ -1,7 +1,7 @@
 #include "stream_dissector_thread.hpp"
 #include "layer.hpp"
-#include "paper_context.hpp"
 #include "packet.hpp"
+#include "paper_context.hpp"
 #include "stream_chunk.hpp"
 #include "virtual_packet.hpp"
 #include <condition_variable>
