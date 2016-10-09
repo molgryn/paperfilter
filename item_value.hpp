@@ -12,10 +12,12 @@ public:
   enum BaseType { NUL, NUMBER, BOOLEAN, STRING, BUFFER, JSON };
 
 public:
+  ItemValue();
   explicit ItemValue(const v8::FunctionCallbackInfo<v8::Value> &args);
   ItemValue(const ItemValue &value);
+  ItemValue &operator=(const ItemValue &);
   ~ItemValue();
-  v8::Local<v8::Value> value() const;
+  v8::Local<v8::Value> data() const;
   std::string type() const;
 
 private:

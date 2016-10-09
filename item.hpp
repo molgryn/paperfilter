@@ -5,6 +5,7 @@
 #include <string>
 #include <v8.h>
 #include <vector>
+#include "item_value.hpp"
 
 class Item {
 public:
@@ -18,7 +19,8 @@ public:
   void setAttr(const std::string &attr);
   std::string range() const;
   void setRange(const std::string &range);
-  v8::Local<v8::Object> value() const;
+  v8::Local<v8::Object> valueObject() const;
+  ItemValue value() const;
   void setValue(v8::Local<v8::Object> value);
 
   std::vector<Item> children() const;

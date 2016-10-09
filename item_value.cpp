@@ -15,8 +15,10 @@ public:
   std::string type;
 };
 
+ItemValue::ItemValue() : d(new Private()) {}
+
 ItemValue::ItemValue(const v8::FunctionCallbackInfo<v8::Value> &args)
-    : d(new Private()) {
+    : ItemValue() {
   v8::Isolate *isolate = v8::Isolate::GetCurrent();
   v8::Local<v8::Value> val = args[0];
   if (!val.IsEmpty()) {
@@ -40,20 +42,28 @@ ItemValue::ItemValue(const v8::FunctionCallbackInfo<v8::Value> &args)
       }
     }
   }
+  d->type = v8pp::from_v8<std::string>(isolate, args[1], "");
 }
 
-ItemValue::ItemValue(const ItemValue &value) : d(new Private()) {
-  d->base = value.d->base;
-  d->num = value.d->num;
-  d->str = value.d->str;
-  d->buf = value.d->buf->slice();
-  d->buf->freeze();
-  d->type = value.d->type;
+ItemValue::ItemValue(const ItemValue &value) : ItemValue() { *this = value; }
+
+ItemValue &ItemValue::operator=(const ItemValue &other) {
+  if (&other == this)
+    return *this;
+  d->base = other.d->base;
+  d->num = other.d->num;
+  d->str = other.d->str;
+  if (d->buf) {
+    d->buf = other.d->buf->slice();
+    d->buf->freeze();
+  }
+  d->type = other.d->type;
+  return *this;
 }
 
 ItemValue::~ItemValue() {}
 
-v8::Local<v8::Value> ItemValue::value() const {
+v8::Local<v8::Value> ItemValue::data() const {
   v8::Isolate *isolate = v8::Isolate::GetCurrent();
   v8::Local<v8::Value> val = v8::Null(isolate);
   switch (d->base) {

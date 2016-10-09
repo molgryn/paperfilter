@@ -57,11 +57,13 @@ void NylonContext::init(v8::Isolate *isolate) {
   Item_class.set("name", v8pp::property(&Item::name, &Item::setName));
   Item_class.set("attr", v8pp::property(&Item::attr, &Item::setAttr));
   Item_class.set("range", v8pp::property(&Item::range, &Item::setRange));
-  Item_class.set("value", v8pp::property(&Item::value, &Item::setValue));
+  Item_class.set("value", v8pp::property(&Item::valueObject, &Item::setValue));
   Item_class.set("addChild", &Item::addChild);
 
   v8pp::class_<ItemValue> ItemValue_class(isolate);
   ItemValue_class.ctor<const v8::FunctionCallbackInfo<v8::Value> &>();
+  ItemValue_class.set("data", v8pp::property(&ItemValue::data));
+  ItemValue_class.set("type", v8pp::property(&ItemValue::type));
 
   v8pp::class_<StreamChunk> StreamChunk_class(isolate);
   StreamChunk_class.ctor<const std::string &, const std::string &>();

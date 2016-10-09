@@ -2,6 +2,7 @@
 #define ITEM_WRAPPER_HPP
 
 #include "item.hpp"
+#include "session_item_value_wrapper.hpp"
 #include <nan.h>
 #include <v8pp/class.hpp>
 
@@ -20,6 +21,8 @@ public:
     Nan::SetAccessor(otl, Nan::New("name").ToLocalChecked(), name);
     Nan::SetAccessor(otl, Nan::New("attr").ToLocalChecked(), attr);
     Nan::SetAccessor(otl, Nan::New("range").ToLocalChecked(), range);
+    Nan::SetAccessor(otl, Nan::New("value").ToLocalChecked(), value);
+    Nan::SetAccessor(otl, Nan::New("children").ToLocalChecked(), children);
     constructor().Reset(Nan::GetFunction(tpl).ToLocalChecked());
   }
 
@@ -49,6 +52,25 @@ public:
         ObjectWrap::Unwrap<SessionItemWrapper>(info.Holder());
     info.GetReturnValue().Set(
         v8pp::to_v8(v8::Isolate::GetCurrent(), wrapper->item.range()));
+  }
+
+  static NAN_GETTER(value) {
+    SessionItemWrapper *wrapper =
+        ObjectWrap::Unwrap<SessionItemWrapper>(info.Holder());
+    info.GetReturnValue().Set(SessionItemValueWrapper::create(wrapper->item.value()));
+  }
+
+  static NAN_GETTER(children) {
+    v8::Isolate *isolate = v8::Isolate::GetCurrent();
+    SessionItemWrapper *wrapper =
+        ObjectWrap::Unwrap<SessionItemWrapper>(info.Holder());
+
+    const auto &items = wrapper->item.children();
+    v8::Local<v8::Array> array = v8::Array::New(isolate, items.size());
+    for (size_t i = 0; i < items.size(); ++i) {
+      array->Set(i, SessionItemWrapper::create(items[i]));
+    }
+    info.GetReturnValue().Set(array);
   }
 
   static v8::Local<v8::Object> create(const Item &item) {
