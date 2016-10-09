@@ -44,9 +44,6 @@ bool Pcap::setBPF(const std::string &filter, std::string *error) {
   return true;
 }
 
-void Pcap::start() {
+void Pcap::start() {}
 
-}
-
-void Pcap::stop() {
-}
+void Pcap::stop() {}

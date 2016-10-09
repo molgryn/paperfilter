@@ -14,7 +14,7 @@
 #endif
 
 #ifdef _WIN32
-#pragma comment(lib,"wpcap.lib")
+#pragma comment(lib, "wpcap.lib")
 #endif
 
 class Pcap::Private {

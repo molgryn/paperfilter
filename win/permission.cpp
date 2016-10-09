@@ -1,5 +1,3 @@
 #include "permission.hpp"
 
-bool Permission::test() {
-  return true;
-}
+bool Permission::test() { return true; }
