@@ -32,7 +32,7 @@ std::string getTmpDir() {
       break;
     }
   }
-  path += "/nylonfilter_" + randomId();
+  path += "/paperfilter_" + randomId();
 #ifdef _WIN32
   _mkdir(path.c_str());
 #else

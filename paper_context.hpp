@@ -1,9 +1,9 @@
-#ifndef NYLON_CONTEXT_HPP
-#define NYLON_CONTEXT_HPP
+#ifndef PAPER_CONTEXT_HPP
+#define PAPER_CONTEXT_HPP
 
 #include <v8.h>
 
-class NylonContext {
+class PaperContext {
 public:
   static void init(v8::Isolate *isolate);
 };

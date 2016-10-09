@@ -1,7 +1,7 @@
 {
-  "name": "nylonfilter",
+  "name": "paperfilter",
   "version": "0.0.1",
-  "description": "nylonfilter",
+  "description": "paperfilter",
   "main": "index.js",
   "dependencies": {
     "bindings": "~1.2.1",
@@ -18,7 +18,7 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/dripcap/nylonfilter.git"
+    "url": "git+https://github.com/dripcap/paperfilter.git"
   },
   "gypfile": true,
   "devDependencies": {

@@ -1,7 +1,7 @@
 {
    "targets":[
       {
-         "target_name":"nylonfilter",
+         "target_name":"paperfilter",
          "variables": {
              "no_wpcap": '<!(echo %NO_WPCAP%)'
          },
@@ -18,7 +18,7 @@
             "packet_store.cpp",
             "stream_chunk.cpp",
             "packet_queue.cpp",
-            "nylon_context.cpp",
+            "paper_context.cpp",
             "dissector.cpp",
             "dissector_thread.cpp",
             "stream_dissector_thread.cpp",

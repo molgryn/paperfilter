@@ -1,4 +1,4 @@
-#include "nylon_context.hpp"
+#include "paper_context.hpp"
 #include "buffer.hpp"
 #include "item.hpp"
 #include "item_value.hpp"
@@ -12,7 +12,7 @@
 
 using namespace v8;
 
-void NylonContext::init(v8::Isolate *isolate) {
+void PaperContext::init(v8::Isolate *isolate) {
   v8pp::class_<Packet> Packet_class(isolate);
   Packet_class.set("seq", v8pp::property(&Packet::seq));
   Packet_class.set("ts_sec", v8pp::property(&Packet::ts_sec));

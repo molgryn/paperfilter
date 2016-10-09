@@ -1,5 +1,5 @@
 #include "filter_thread.hpp"
-#include "nylon_context.hpp"
+#include "paper_context.hpp"
 #include "packet.hpp"
 #include "packet_store.hpp"
 #include <cstdlib>
@@ -49,7 +49,7 @@ FilterThread::Private::Private(const std::shared_ptr<Context> &ctx) : ctx(ctx) {
       v8::Local<v8::Context> context = v8::Context::New(isolate);
       v8::Context::Scope context_scope(context);
       v8::TryCatch try_catch;
-      NylonContext::init(isolate);
+      PaperContext::init(isolate);
 
       v8::Local<v8::Function> func;
       Nan::MaybeLocal<Nan::BoundScript> script =

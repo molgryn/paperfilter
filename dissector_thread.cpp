@@ -1,6 +1,6 @@
 #include "dissector_thread.hpp"
 #include "layer.hpp"
-#include "nylon_context.hpp"
+#include "paper_context.hpp"
 #include "packet.hpp"
 #include "packet_queue.hpp"
 #include "stream_chunk.hpp"
@@ -59,7 +59,7 @@ DissectorThread::Private::Private(const std::shared_ptr<Context> &ctx)
       v8::Local<v8::Context> context = v8::Context::New(isolate);
       v8::Context::Scope context_scope(context);
       v8::TryCatch try_catch;
-      NylonContext::init(isolate);
+      PaperContext::init(isolate);
 
       for (const Dissector &diss : ctx.dissectors) {
         v8::Local<v8::Object> moduleObj = v8::Object::New(isolate);

@@ -1,4 +1,4 @@
-const nylonfilter = require('bindings')('nylonfilter');
+const paperfilter = require('bindings')('paperfilter');
 const EventEmitter = require('events');
 const rollup = require('rollup').rollup;
 const babel = require('rollup-plugin-babel');
@@ -6,7 +6,7 @@ const babel = require('rollup-plugin-babel');
 class Session extends EventEmitter {
   constructor(option) {
     super();
-    this.sess = new nylonfilter.Session(option);
+    this.sess = new paperfilter.Session(option);
     this.sess.errorCallback = (err) => {
       this.emit('error', err);
     };

@@ -9,7 +9,7 @@
     <a id="bb"></a>
     <a id="cc"></a>
     <script>
-      var nylon = require('.');
+      var paper = require('.');
 
       var option = {
         namespace: '::<Ethernet>',
@@ -37,7 +37,7 @@
       var readStream = require('fs').createReadStream("dump.msgpack");
       var decodeStream = msgpack.createDecodeStream();
 
-      nylon.Session.create(option).then((sess) => {
+      paper.Session.create(option).then((sess) => {
         readStream.pipe(decodeStream).on("data", function(data) {
           if (data.length === 4) {
             var pkt = {
