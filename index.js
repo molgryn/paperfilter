@@ -2,6 +2,7 @@ const paperfilter = require('bindings')('paperfilter');
 const EventEmitter = require('events');
 const rollup = require('rollup').rollup;
 const babel = require('rollup-plugin-babel');
+const esprima = require('esprima');
 
 class Session extends EventEmitter {
   constructor(option) {
@@ -66,6 +67,20 @@ class Session extends EventEmitter {
         });
       }));
     }
+    tasks.push(rollup({
+      entry: __dirname + '/filter.es',
+      plugins: [babel()],
+      onwarn: (e) => {
+        console.log(e)
+      }
+    }).then((bundle) => {
+      const result = bundle.generate({
+        format: 'cjs'
+      });
+      return result.code;
+    }).then((code) => {
+      sessOption.filterScript = code;
+    }));
     return Promise.all(tasks).then(() => {
       return new Session(sessOption);
     });
@@ -76,6 +91,7 @@ class Session extends EventEmitter {
   }
 
   filter(name, filter) {
+    console.log(esprima.parse(filter).body)
     return this.sess.filter(name, filter);
   }
 
