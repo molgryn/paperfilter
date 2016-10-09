@@ -17,44 +17,48 @@ std::string randomId() {
   }
   return stream.str();
 }
+
+std::string getTmpDir() {
+  std::string path = "/tmp";
+  const char *envs[] = {"TMP", "TEMP", "TMPDIR", "TEMPDIR"};
+  for (const char *env : envs) {
+    const char *tmp = std::getenv(env);
+    if (tmp && strlen(tmp)) {
+      path = tmp;
+      break;
+    }
+  }
+  path += "/nylonfilter_" + randomId();
+  mkdir(path.c_str(), 0755);
+  return path;
+}
 }
 
 std::string LargeBuffer::tmpDir() {
-  atexit([]() { printf("%s\n", "atexit"); });
-  static std::string path;
-  if (path.empty()) {
-    path = "/tmp";
-    const char *envs[] = {"TMP", "TEMP", "TMPDIR", "TEMPDIR"};
-    for (const char *env : envs) {
-      const char *tmp = std::getenv(env);
-      if (tmp && strlen(tmp)) {
-        path = tmp;
-        break;
-      }
-    }
-    path += "/nylonfilter_" + randomId();
-    mkdir(path.c_str(), 0755);
-  }
+  static const std::string path = getTmpDir();
   return path;
 }
 
 class LargeBuffer::Private {
 public:
-  std::string id;
+  std::string id = randomId();
 };
 
-LargeBuffer::LargeBuffer(const std::string &id) : d(new Private()) {
-  if (id.empty()) {
-    d->id = randomId();
-  } else {
-    d->id = id;
-  }
+LargeBuffer::LargeBuffer() : d(std::make_shared<Private>()) {}
+
+LargeBuffer::LargeBuffer(const LargeBuffer &other) { *this = other; }
+
+LargeBuffer &LargeBuffer::operator=(const LargeBuffer &other) {
+  if (&other == this)
+    return *this;
+  d->id = other.d->id;
+  return *this;
 }
 
 LargeBuffer::~LargeBuffer() {}
 
 std::string LargeBuffer::id() const { return d->id; }
 
-void LargeBuffer::write(const v8::FunctionCallbackInfo<v8::Value> &args) {}
+std::string LargeBuffer::path() const { return tmpDir() + "/" + d->id; }
 
-void LargeBuffer::read(const v8::FunctionCallbackInfo<v8::Value> &args) {}
+void LargeBuffer::write(const v8::FunctionCallbackInfo<v8::Value> &args) {}

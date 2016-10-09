@@ -1,5 +1,6 @@
 #include "item_value.hpp"
 #include "buffer.hpp"
+#include "large_buffer.hpp"
 #include <memory>
 #include <nan.h>
 #include <node_buffer.h>
@@ -12,6 +13,7 @@ public:
   double num;
   std::string str;
   std::unique_ptr<Buffer> buf;
+  LargeBuffer lbuf;
   std::string type;
 };
 
@@ -36,6 +38,10 @@ ItemValue::ItemValue(const v8::FunctionCallbackInfo<v8::Value> &args)
         d->buf = buffer->slice();
         d->buf->freeze();
         d->base = BUFFER;
+      } else if (LargeBuffer *buffer =
+                     v8pp::class_<LargeBuffer>::unwrap_object(isolate, val)) {
+        d->lbuf = *buffer;
+        d->base = LARGE_BUFFER;
       } else {
         d->str = v8pp::json_str(isolate, val);
         d->base = JSON;
@@ -90,6 +96,14 @@ v8::Local<v8::Value> ItemValue::data() const {
         val = v8pp::class_<Buffer>::import_external(isolate,
                                                     d->buf->slice().release());
       }
+    }
+    break;
+  case LARGE_BUFFER:
+    if (isolate->GetData(1)) { // node.js
+
+    } else { // dissector
+      val = v8pp::class_<LargeBuffer>::import_external(
+          isolate, new LargeBuffer(d->lbuf));
     }
     break;
   case JSON:

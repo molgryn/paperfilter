@@ -71,7 +71,6 @@ void NylonContext::init(v8::Isolate *isolate) {
 
   v8pp::class_<LargeBuffer> LargeBuffer_class(isolate);
   LargeBuffer_class.ctor<>();
-  LargeBuffer_class.set("read", &LargeBuffer::read);
   LargeBuffer_class.set("write", &LargeBuffer::write);
 
   v8pp::module dripcap(isolate);

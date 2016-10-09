@@ -9,7 +9,7 @@ class Buffer;
 
 class ItemValue {
 public:
-  enum BaseType { NUL, NUMBER, BOOLEAN, STRING, BUFFER, JSON };
+  enum BaseType { NUL, NUMBER, BOOLEAN, STRING, BUFFER, LARGE_BUFFER, JSON };
 
 public:
   ItemValue();

@@ -38,10 +38,7 @@ v8::Local<v8::Object> Item::valueObject() const {
                                                   new ItemValue(d->value));
 }
 
-ItemValue Item::value() const
-{
-  return d->value;
-}
+ItemValue Item::value() const { return d->value; }
 
 void Item::setValue(v8::Local<v8::Object> value) {
   Isolate *isolate = Isolate::GetCurrent();

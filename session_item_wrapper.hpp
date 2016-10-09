@@ -57,7 +57,8 @@ public:
   static NAN_GETTER(value) {
     SessionItemWrapper *wrapper =
         ObjectWrap::Unwrap<SessionItemWrapper>(info.Holder());
-    info.GetReturnValue().Set(SessionItemValueWrapper::create(wrapper->item.value()));
+    info.GetReturnValue().Set(
+        SessionItemValueWrapper::create(wrapper->item.value()));
   }
 
   static NAN_GETTER(children) {

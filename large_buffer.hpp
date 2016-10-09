@@ -7,21 +7,19 @@
 
 class LargeBuffer {
 public:
-  LargeBuffer(const std::string &id = "");
+  LargeBuffer();
   ~LargeBuffer();
-  LargeBuffer(const LargeBuffer &) = delete;
-  LargeBuffer &operator=(const LargeBuffer &) = delete;
+  LargeBuffer(const LargeBuffer &);
+  LargeBuffer &operator=(const LargeBuffer &);
 
   std::string id() const;
+  std::string path() const;
   void write(const v8::FunctionCallbackInfo<v8::Value> &args);
-  void read(const v8::FunctionCallbackInfo<v8::Value> &args);
-
-private:
   static std::string tmpDir();
 
 private:
   class Private;
-  std::unique_ptr<Private> d;
+  std::shared_ptr<Private> d;
 };
 
 #endif
