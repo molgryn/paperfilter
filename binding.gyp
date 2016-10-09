@@ -69,6 +69,21 @@
                      "GCC_ENABLE_CPP_RTTI":"YES"
                   }
                }
+            ],
+            [
+               "OS=='win'",
+               {
+                  "sources":[
+                    "win/permission.cpp",
+                    "win/pcap.cpp"
+                  ],
+                  "include_dirs":[
+                    "win"
+                  ],
+                  "defines": [
+                    "NOMINMAX"
+                  ]
+               }
             ]
          ]
       }
