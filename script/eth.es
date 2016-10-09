@@ -9,8 +9,10 @@ export default class Dissector {
     item.value = new Value(new LargeBuffer());
     let item2 = new Item();
     item2.name = "aaabbb";
+    item2.value = new Value(false);
     item.addChild(item2);
     layer.addItem(item);
+    layer.setAttr("src", item2);
     return [layer];
   }
 };

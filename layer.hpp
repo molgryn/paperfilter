@@ -33,6 +33,9 @@ public:
   void addItem(v8::Local<v8::Object> obj);
   std::vector<Item> items() const;
 
+  void setAttr(const std::string &name, v8::Local<v8::Object> obj);
+  std::unordered_map<std::string, Item> attrs() const;
+
 private:
   class Private;
   std::shared_ptr<Private> d;
