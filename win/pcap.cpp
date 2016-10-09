@@ -1,11 +1,11 @@
 #include "pcap.hpp"
 #include "../packet.hpp"
+#include <iphlpapi.h>
 #include <mutex>
 #include <pcap.h>
 #include <signal.h>
 #include <thread>
 #include <winsock2.h>
-#include <iphlpapi.h>
 
 #ifdef interface
 #undef interface
@@ -48,26 +48,27 @@ std::vector<Pcap::Device> Pcap::devices() const {
 
   std::unordered_map<std::string, std::string> descriptions;
   {
-	  PMIB_IFTABLE ifTable = nullptr;
-	  DWORD dwSize = 0;
-	  if (GetIfTable(nullptr, &dwSize, 0) == ERROR_INSUFFICIENT_BUFFER) {
-		  ifTable = static_cast<MIB_IFTABLE *>(malloc(dwSize));
-	  }
+    PMIB_IFTABLE ifTable = nullptr;
+    DWORD dwSize = 0;
+    if (GetIfTable(nullptr, &dwSize, 0) == ERROR_INSUFFICIENT_BUFFER) {
+      ifTable = static_cast<MIB_IFTABLE *>(malloc(dwSize));
+    }
 
-	  if (GetIfTable(ifTable, &dwSize, 0) == NO_ERROR) {
-		  if (ifTable->dwNumEntries > 0) {
-			  for (IF_INDEX i = 1; i <= ifTable->dwNumEntries; i++) {
-				  MIB_IFROW MibIfRow;
-				  MibIfRow.dwIndex = i;
-				  if (GetIfEntry(&MibIfRow) == NO_ERROR) {
-					  char name[512];
-					  wcstombs(name, MibIfRow.wszName, sizeof(name));
-					  descriptions[name + (strlen(name) - guidLen)] = reinterpret_cast<const char*>(MibIfRow.bDescr);
-				  }
-			  }
-		  }
-	  }
-	  free(ifTable);
+    if (GetIfTable(ifTable, &dwSize, 0) == NO_ERROR) {
+      if (ifTable->dwNumEntries > 0) {
+        for (IF_INDEX i = 1; i <= ifTable->dwNumEntries; i++) {
+          MIB_IFROW MibIfRow;
+          MibIfRow.dwIndex = i;
+          if (GetIfEntry(&MibIfRow) == NO_ERROR) {
+            char name[512];
+            wcstombs(name, MibIfRow.wszName, sizeof(name));
+            descriptions[name + (strlen(name) - guidLen)] =
+                reinterpret_cast<const char *>(MibIfRow.bDescr);
+          }
+        }
+      }
+    }
+    free(ifTable);
   }
 
   pcap_if_t *alldevsp;
@@ -83,13 +84,13 @@ std::vector<Pcap::Device> Pcap::devices() const {
     Device dev;
     dev.id = ifs->name;
     dev.name = ifs->name;
-	const auto &it = descriptions.find(ifs->name + (strlen(ifs->name) - guidLen));
-	if (it != descriptions.end()) {
-		dev.name = it->second;
-	}
-	else {
-		dev.name = ifs->name;
-	}
+    const auto &it =
+        descriptions.find(ifs->name + (strlen(ifs->name) - guidLen));
+    if (it != descriptions.end()) {
+      dev.name = it->second;
+    } else {
+      dev.name = ifs->name;
+    }
     if (ifs->description)
       dev.description = ifs->description;
     dev.loopback = ifs->flags & PCAP_IF_LOOPBACK;

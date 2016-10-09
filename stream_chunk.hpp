@@ -3,6 +3,7 @@
 
 #include <memory>
 #include <string>
+#include <v8.h>
 
 class Layer;
 
@@ -15,6 +16,8 @@ public:
   std::string ns() const;
   std::string id() const;
   std::shared_ptr<Layer> layer() const;
+  void setPayloadBuffer(v8::Local<v8::Object>);
+  v8::Local<v8::Object> payloadBuffer() const;
 
 private:
   class Private;

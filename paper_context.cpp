@@ -70,6 +70,9 @@ void PaperContext::init(v8::Isolate *isolate) {
   v8pp::class_<StreamChunk> StreamChunk_class(isolate);
   StreamChunk_class.ctor<const std::string &, const std::string &>();
   StreamChunk_class.set("namespace", v8pp::property(&Layer::ns));
+  StreamChunk_class.set("payload",
+                        v8pp::property(&StreamChunk::payloadBuffer,
+                                       &StreamChunk::setPayloadBuffer));
 
   v8pp::class_<LargeBuffer> LargeBuffer_class(isolate);
   LargeBuffer_class.ctor<>();
