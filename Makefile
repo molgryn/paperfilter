@@ -4,9 +4,11 @@ ifeq ($(OS),Windows_NT)
 
 CONFIG = build/binding.sln
 all: $(CONFIG)
+	set HOMEPATH=%HOMEPATH%\.electron-gyp
 	node-gyp build --target=$(ELECTRON_VERSION) --arch=x64 --dist-url=https://atom.io/download/atom-shell
 
 $(CONFIG):
+	set HOMEPATH=%HOMEPATH%\.electron-gyp
 	node-gyp configure --target=$(ELECTRON_VERSION) --arch=x64 --dist-url=https://atom.io/download/atom-shell
 
 else
