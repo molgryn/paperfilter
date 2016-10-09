@@ -1,11 +1,11 @@
 #ifndef ITEM_HPP
 #define ITEM_HPP
 
+#include "item_value.hpp"
 #include <memory>
 #include <string>
 #include <v8.h>
 #include <vector>
-#include "item_value.hpp"
 
 class Item {
 public:

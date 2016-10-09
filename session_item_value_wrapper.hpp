@@ -1,5 +1,5 @@
-#ifndef ITEM_VALUE_WRAPPER_HPP
-#define ITEM_VALUE_WRAPPER_HPP
+#ifndef SESSION_ITEM_VALUE_WRAPPER_HPP
+#define SESSION_ITEM_VALUE_WRAPPER_HPP
 
 #include "item_value.hpp"
 #include <nan.h>

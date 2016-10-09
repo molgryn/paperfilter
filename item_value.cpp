@@ -1,6 +1,7 @@
 #include "item_value.hpp"
 #include "buffer.hpp"
 #include "large_buffer.hpp"
+#include "session_large_buffer_wrapper.hpp"
 #include <memory>
 #include <nan.h>
 #include <node_buffer.h>
@@ -100,7 +101,7 @@ v8::Local<v8::Value> ItemValue::data() const {
     break;
   case LARGE_BUFFER:
     if (isolate->GetData(1)) { // node.js
-
+      val = SessionLargeBufferWrapper::create(d->lbuf);
     } else { // dissector
       val = v8pp::class_<LargeBuffer>::import_external(
           isolate, new LargeBuffer(d->lbuf));

@@ -4,8 +4,8 @@
 #include <memory>
 #include <string>
 #include <unordered_map>
-#include <vector>
 #include <v8.h>
+#include <vector>
 
 class Packet;
 class Item;

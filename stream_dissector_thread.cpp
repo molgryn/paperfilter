@@ -100,8 +100,9 @@ StreamDissectorThread::Private::Private(const std::shared_ptr<Context> &ctx)
         }
       }
 
-      std::unordered_map<
-          std::string, std::vector<v8::UniquePersistent<v8::Object>>> instances;
+      std::unordered_map<std::string,
+                         std::vector<v8::UniquePersistent<v8::Object>>>
+          instances;
 
       while (true) {
         std::unique_lock<std::mutex> lock(mutex);

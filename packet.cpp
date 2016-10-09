@@ -3,11 +3,11 @@
 #include "layer.hpp"
 #include "virtual_packet.hpp"
 #include <chrono>
+#include <ctime>
 #include <node_buffer.h>
 #include <pcap.h>
 #include <v8pp/class.hpp>
 #include <v8pp/object.hpp>
-#include <ctime>
 
 using namespace v8;
 

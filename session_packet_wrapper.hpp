@@ -1,5 +1,5 @@
-#ifndef PACKET_WRAPPER_HPP
-#define PACKET_WRAPPER_HPP
+#ifndef SESSION_PACKET_WRAPPER_HPP
+#define SESSION_PACKET_WRAPPER_HPP
 
 #include "buffer.hpp"
 #include "packet.hpp"

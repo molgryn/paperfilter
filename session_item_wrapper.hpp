@@ -1,5 +1,5 @@
-#ifndef ITEM_WRAPPER_HPP
-#define ITEM_WRAPPER_HPP
+#ifndef SESSION_ITEM_WRAPPER_HPP
+#define SESSION_ITEM_WRAPPER_HPP
 
 #include "item.hpp"
 #include "session_item_value_wrapper.hpp"

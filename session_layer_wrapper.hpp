@@ -1,5 +1,5 @@
-#ifndef LAYER_WRAPPER_HPP
-#define LAYER_WRAPPER_HPP
+#ifndef SESSION_LAYER_WRAPPER_HPP
+#define SESSION_LAYER_WRAPPER_HPP
 
 #include "layer.hpp"
 #include "session_item_wrapper.hpp"

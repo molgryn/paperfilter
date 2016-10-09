@@ -1,9 +1,9 @@
 #include "large_buffer.hpp"
 #include <cstdlib>
-#include <sstream>
-#include <random>
-#include <iomanip>
 #include <cstring>
+#include <iomanip>
+#include <random>
+#include <sstream>
 #include <sys/stat.h>
 
 #ifdef _WIN32
@@ -54,7 +54,10 @@ public:
 
 LargeBuffer::LargeBuffer() : d(std::make_shared<Private>()) {}
 
-LargeBuffer::LargeBuffer(const LargeBuffer &other) { *this = other; }
+LargeBuffer::LargeBuffer(const LargeBuffer &other)
+    : d(std::make_shared<Private>()) {
+  *this = other;
+}
 
 LargeBuffer &LargeBuffer::operator=(const LargeBuffer &other) {
   if (&other == this)
