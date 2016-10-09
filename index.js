@@ -91,8 +91,21 @@ class Session extends EventEmitter {
   }
 
   filter(name, filter) {
-    console.log(esprima.parse(filter).body)
-    return this.sess.filter(name, filter);
+    let body = '';
+    const ast = esprima.parse(filter);
+    switch (ast.body.length) {
+      case 0:
+        break;
+      case 1:
+        const root = ast.body[0];
+        if (root.type !== "ExpressionStatement")
+          throw new SyntaxError();
+        body = JSON.stringify(root.expression);
+        break;
+      default:
+        throw new SyntaxError();
+    }
+    return this.sess.filter(name, body);
   }
 
   get(seq) {

@@ -65,10 +65,7 @@
           console.log(packets);
           document.getElementById("bb").appendChild(document.createTextNode(sess.namespace));
         })
-        sess.on('error', (err) => {
-          console.log(err);
-          document.getElementById("cc").appendChild(document.createTextNode(sess.namespace));
-        })
+        document.getElementById("cc").appendChild(document.createTextNode(sess.namespace));
       });
     </script>
   </body>

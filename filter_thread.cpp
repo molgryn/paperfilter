@@ -7,6 +7,7 @@
 #include <thread>
 #include <v8pp/class.hpp>
 #include <v8pp/object.hpp>
+#include <v8pp/json.hpp>
 
 namespace {
 class ArrayBufferAllocator : public v8::ArrayBuffer::Allocator {
@@ -51,9 +52,11 @@ FilterThread::Private::Private(const std::shared_ptr<Context> &ctx) : ctx(ctx) {
       v8::TryCatch try_catch;
       PaperContext::init(isolate);
 
+      v8::Local<v8::Value> filter = v8pp::json_parse(isolate, ctx.filter);
+
       v8::Local<v8::Function> func;
       Nan::MaybeLocal<Nan::BoundScript> script =
-          Nan::CompileScript(v8pp::to_v8(isolate, ctx.filter));
+          Nan::CompileScript(v8pp::to_v8(isolate, "(function() {return true})"));
       if (!script.IsEmpty()) {
         Nan::MaybeLocal<v8::Value> result =
             Nan::RunScript(script.ToLocalChecked());
