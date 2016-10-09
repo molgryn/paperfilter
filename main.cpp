@@ -4,12 +4,8 @@
 #include "session_item_value_wrapper.hpp"
 #include "session_wrapper.hpp"
 #include <nan.h>
-
-#include <execinfo.h>
 #include <signal.h>
 #include <sys/stat.h>
-#include <sys/un.h>
-#include <unistd.h>
 
 using namespace v8;
 

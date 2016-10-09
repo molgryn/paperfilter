@@ -239,7 +239,7 @@ void Buffer::toString(const v8::FunctionCallbackInfo<v8::Value> &args) const {
 }
 
 std::string Buffer::valueOf() const {
-  size_t tail = std::min(16ul, length());
+  size_t tail = std::min(static_cast<size_t>(16), length());
   std::string str("<Buffer ");
   std::stringstream stream;
   for (size_t i = 0; i < tail; ++i) {

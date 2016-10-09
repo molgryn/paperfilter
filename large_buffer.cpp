@@ -6,6 +6,10 @@
 #include <cstring>
 #include <sys/stat.h>
 
+#ifdef _WIN32
+#include <direct.h>
+#endif
+
 namespace {
 std::string randomId() {
   std::random_device dev;
@@ -29,7 +33,11 @@ std::string getTmpDir() {
     }
   }
   path += "/nylonfilter_" + randomId();
+#ifdef _WIN32
+  _mkdir(path.c_str());
+#else
   mkdir(path.c_str(), 0755);
+#endif
   return path;
 }
 }

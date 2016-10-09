@@ -5,6 +5,10 @@
 #include <string>
 #include <v8.h>
 
+#ifdef interface
+#undef interface
+#endif
+
 class Packet;
 
 class Session {

@@ -1,4 +1,7 @@
 {
+"variables": {
+    "no_wpcap%": "false"
+},
    "targets":[
       {
          "target_name":"nylonfilter",
@@ -38,14 +41,14 @@
                "OS=='linux'",
                {
                   "sources":[
-                    "linux/permission.cpp",
-                    "linux/pcap.cpp"
+                     "linux/permission.cpp",
+                     "linux/pcap.cpp"
                   ],
                   "include_dirs":[
-                    "linux"
+                     "linux"
                   ],
-                  "libraries": [
-                    "-Wl,-dn,-lpcap,-lcap,-lrt,-dy,-lpthread,-ldl"
+                  "libraries":[
+                     "-Wl,-dn,-lpcap,-lcap,-lrt,-dy,-lpthread,-ldl"
                   ]
                }
             ],
@@ -53,15 +56,15 @@
                "OS=='mac'",
                {
                   "sources":[
-                    "darwin/permission.cpp",
-                    "darwin/pcap.cpp"
+                     "darwin/permission.cpp",
+                     "darwin/pcap.cpp"
                   ],
                   "include_dirs":[
-                    "darwin"
+                     "darwin"
                   ],
-                  "libraries": [
-                    "-L/usr/local/lib",
-                    "-lpcap"
+                  "libraries":[
+                     "-L/usr/local/lib",
+                     "-lpcap"
                   ],
                   "xcode_settings":{
                      "MACOSX_DEPLOYMENT_TARGET":"10.9",
@@ -74,14 +77,37 @@
                "OS=='win'",
                {
                   "sources":[
-                    "win/permission.cpp",
-                    "win/pcap.cpp"
+                     "win/permission.cpp",
+                     "win/pcap.cpp"
                   ],
                   "include_dirs":[
-                    "win"
+                     "win",
+                     "vendor/WpdPack/Include"
                   ],
-                  "defines": [
-                    "NOMINMAX"
+                  "configurations":{
+                     "Release":{
+                        "msvs_settings":{
+                           "VCLinkerTool":{
+                              "AdditionalLibraryDirectories":[
+                                 "<(module_root_dir)/vendor/WpdPack/Lib/x64"
+                              ]
+                           }
+                        }
+                     }
+                  },
+                  "defines":[
+                     "NOMINMAX"
+                  ]
+               }
+            ],
+            [
+               "no_wpcap=='true'",
+               {
+                  "sources!":[
+                     "win/pcap.cpp"
+                  ],
+                  "sources":[
+                     "win/pcap_null.cpp"
                   ]
                }
             ]

@@ -5,6 +5,18 @@
 #include <signal.h>
 #include <thread>
 
+#ifdef interface
+#undef interface
+#endif
+
+#ifndef PCAP_NETMASK_UNKNOWN
+#define PCAP_NETMASK_UNKNOWN 0xffffffff
+#endif
+
+#ifdef _WIN32
+#pragma comment(lib,"wpcap.lib")
+#endif
+
 class Pcap::Private {
 public:
   Private(const std::shared_ptr<Context> &ctx);

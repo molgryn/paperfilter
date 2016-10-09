@@ -6,6 +6,10 @@
 #include <nan.h>
 #include <node_buffer.h>
 
+#ifdef interface
+#undef interface
+#endif
+
 class SessionWrapper : public Nan::ObjectWrap {
 private:
   SessionWrapper(Session *session) : session(session) {}

@@ -7,6 +7,7 @@
 #include <pcap.h>
 #include <v8pp/class.hpp>
 #include <v8pp/object.hpp>
+#include <ctime>
 
 using namespace v8;
 

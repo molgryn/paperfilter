@@ -7,7 +7,7 @@ all: $(CONFIG)
 	node-gyp build --target=$(ELECTRON_VERSION) --arch=x64 --dist-url=https://atom.io/download/atom-shell
 
 $(CONFIG):
-	node-gyp configure --target=$(ELECTRON_VERSION) --arch=x64 --dist-url=https://atom.io/download/atom-shell
+	node-gyp configure --no_wpcap=$(no_wpcap) --target=$(ELECTRON_VERSION) --arch=x64 --dist-url=https://atom.io/download/atom-shell
 
 else
 
