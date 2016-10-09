@@ -1,0 +1,16 @@
+version: 1.0.{build}
+init:
+- ps: Install-Product node 6 x64
+environment:
+  NO_WPCAP: true
+  CL: -DDELAYIMP_INSECURE_WRITABLE_HOOKS
+install:
+- ps: >-
+    choco install jq make
+
+    npm install --depth 0 -g node-gyp mocha
+
+    npm install --depth 0
+build: off
+test_script:
+- ps: mocha
