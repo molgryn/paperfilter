@@ -36,6 +36,7 @@ public:
   std::vector<std::unique_ptr<DissectorThread>> dissectorThreads;
   std::unordered_map<std::string, FilterContext> filterThreads;
   std::string ns;
+  std::string filterScript;
 
   UniquePersistent<Function> packetsCb;
   UniquePersistent<Function> filtersCb;
@@ -127,6 +128,7 @@ Session::Session(v8::Local<v8::Value> option) : d(new Private()) {
   Isolate *isolate = Isolate::GetCurrent();
   Local<Object> opt = option.As<Object>();
   v8pp::get_option(isolate, opt, "namespace", d->ns);
+  v8pp::get_option(isolate, opt, "filterScript", d->filterScript);
 
   Local<Array> dissectorArray;
   std::vector<Dissector> dissectors;
@@ -208,6 +210,7 @@ void Session::filter(const std::string &name, const std::string &filter) {
     context.ctx = std::make_shared<FilterThread::Context>();
     context.ctx->store = &d->store;
     context.ctx->filter = filter;
+    context.ctx->script = d->filterScript;
     context.ctx->updateCb = [this](uint32_t seq) {
       uv_async_send(&d->filtersCbAsync);
     };

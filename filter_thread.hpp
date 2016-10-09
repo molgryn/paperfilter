@@ -20,6 +20,7 @@ public:
     uint32_t maxSeq = 0;
     PacketStore *store = nullptr;
     std::string filter;
+    std::string script;
     std::function<void(uint32_t)> updateCb;
     std::function<void(std::string)> errorCb;
   };
