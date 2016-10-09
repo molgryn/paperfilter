@@ -1,10 +1,10 @@
 {
-"variables": {
-    "no_wpcap%": "false"
-},
    "targets":[
       {
          "target_name":"nylonfilter",
+         "variables": {
+             "no_wpcap": '<!(echo %NO_WPCAP%)'
+         },
          "sources":[
             "main.cpp",
             "buffer.cpp",
