@@ -54,6 +54,8 @@ void PaperContext::init(v8::Isolate *isolate) {
                   v8pp::property(&Layer::extension, &Layer::setExtension));
   Layer_class.set("payload", v8pp::property(&Layer::payloadBuffer,
                                             &Layer::setPayloadBuffer));
+  Layer_class.set("layers", v8pp::property(&Layer::layersObject));
+  Layer_class.set("attrs", v8pp::property(&Layer::attrsObject));
   Layer_class.set("addItem", &Layer::addItem);
   Layer_class.set("attr", &Layer::attr);
   Layer_class.set("setAttr", &Layer::setAttr);

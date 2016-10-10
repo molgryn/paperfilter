@@ -100,6 +100,7 @@ class Session extends EventEmitter {
         const root = ast.body[0];
         if (root.type !== "ExpressionStatement")
           throw new SyntaxError();
+          console.log(root.expression)
         body = JSON.stringify(root.expression);
         break;
       default:

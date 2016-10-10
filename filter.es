@@ -1,18 +1,73 @@
+
 module.exports = function makeFilter(node) {
-  return (function(node) {
-    switch (node.type) {
-      case 'Identifier':
-        return function(pkt) {
-          if (pkt[node.name] != null) {
-            return pkt[node.name];
+  switch (node.type) {
+    case 'MemberExpression':
+      let objFunc = makeFilter(node.object);
+      let propFunc;
+      if (node.property.type === 'Identifier') {
+        propFunc = () => node.property.name;
+      } else {
+        propFunc = makeFilter(node.property);
+      }
+      return function(pkt) {
+        try {
+          let obj = objFunc(pkt);
+          let prop = propFunc(pkt);
+          if ((obj.attrs != null) && obj.attrs.hasOwnProperty(prop)) {
+            return obj.attrs[prop];
+          }
+          if ((obj.data != null) && obj.data.hasOwnProperty(prop)) {
+            return obj.data[prop];
+          }
+          if (obj.hasOwnProperty(prop)) {
+            return obj[prop];
+          }
+        } catch (error) {
+          return null;
+        }
+        return null;
+      };
+    case 'Identifier':
+      return function(pkt) {
+        if (pkt.hasOwnProperty(node.name)) {
+          return pkt[node.name];
+        }
+        let find = function(layers, name) {
+          for (let ns in layers) {
+            let layer = layers[ns];
+            if (layer.name === name) {
+              return layer;
+            }
+            if (layer.alias === name) {
+              return layer;
+            }
+            let found = find(layer.layers, name);
+            if (found != null) {
+              return found;
+            }
           }
           return null;
-        };
-        break;
-    }
-  });
+        }
+        let found = find(pkt.layers, node.name);
+        if (found != null) {
+          return found;
+        }
+        if (node.name === '$') {
+          return pkt;
+        }
+        let global = ('global', eval)('this');
+        if (global.hasOwnProperty(node.name)) {
+          return global[node.name];
+        }
+        return null;
+      };
+      break;
+    default:
+      return function(pkt) { return false; };
+  }
 };
 
+/*
 module.exports = function makeFilter(node) {
   'use strict';
   return (function(node) {
@@ -232,3 +287,4 @@ module.exports = function makeFilter(node) {
     })();
   })(node);
 };
+*/

@@ -112,6 +112,8 @@ FilterThread::Private::Private(const std::shared_ptr<Context> &ctx) : ctx(ctx) {
                 func->Call(isolate->GetCurrentContext()->Global(), 1, args);
 
             v8pp::class_<Packet>::unreference_external(isolate, pkt.get());
+            Nan::Utf8String str(result);
+            printf("%s! !\n", *str);
             if (result.IsEmpty()) {
               if (ctx.errorCb) {
                 Nan::Utf8String str(try_catch.Exception());

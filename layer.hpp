@@ -31,6 +31,7 @@ public:
 
   void addLayer(const std::shared_ptr<Layer> &layer);
   std::unordered_map<std::string, std::shared_ptr<Layer>> &layers() const;
+  v8::Local<v8::Object> layersObject() const;
 
   void setPacket(const std::shared_ptr<Packet> &pkt);
   std::shared_ptr<Packet> packet() const;
@@ -45,6 +46,7 @@ public:
 
   void setAttr(const std::string &name, v8::Local<v8::Object> obj);
   std::unordered_map<std::string, ItemValue> attrs() const;
+  v8::Local<v8::Object> attrsObject() const;
   v8::Local<v8::Object> attr(const std::string &name) const;
 
 private:
