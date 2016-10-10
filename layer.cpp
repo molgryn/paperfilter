@@ -26,6 +26,8 @@ Layer::~Layer() {}
 
 std::string Layer::ns() const { return d->ns; }
 
+void Layer::setNs(const std::string &ns) { d->ns = ns; }
+
 std::string Layer::name() const { return d->name; }
 
 void Layer::setName(const std::string &name) { d->name = name; }

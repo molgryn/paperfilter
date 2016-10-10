@@ -45,7 +45,7 @@ void PaperContext::init(v8::Isolate *isolate) {
 
   v8pp::class_<Layer> Layer_class(isolate);
   Layer_class.ctor<const std::string &>();
-  Layer_class.set("namespace", v8pp::property(&Layer::ns));
+  Layer_class.set("namespace", v8pp::property(&Layer::ns, &Layer::setNs));
   Layer_class.set("name", v8pp::property(&Layer::name, &Layer::setName));
   Layer_class.set("summary",
                   v8pp::property(&Layer::summary, &Layer::setSummary));

@@ -19,6 +19,7 @@ public:
   Layer &operator=(const Layer &) = delete;
 
   std::string ns() const;
+  void setNs(const std::string &ns);
   std::string name() const;
   void setName(const std::string &name);
   std::string summary() const;
