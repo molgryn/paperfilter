@@ -49,7 +49,7 @@
             sess.analyze(pkt);
           }
         });
-        sess.filter('pkt', 'eth.etherType.IPv4');
+        sess.filter('pkt', 'eth.etherType.IPv4 == 2048');
         console.log(sess.permission);
         console.log(sess.devices);
         console.log(sess);
