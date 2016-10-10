@@ -198,7 +198,9 @@ Session::Session(v8::Local<v8::Value> option) : d(new Private()) {
 Session::~Session() {}
 
 void Session::analyze(std::unique_ptr<Packet> pkt) {
-  pkt->addLayer(std::make_shared<Layer>(d->ns));
+  const auto &layer = std::make_shared<Layer>(d->ns);
+  layer->setName("Raw Layer");
+  pkt->addLayer(layer);
   d->queue.push(std::move(pkt));
 }
 
