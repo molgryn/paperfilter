@@ -13,6 +13,7 @@ public:
   std::string range;
   ItemValue value;
   std::vector<Item> children;
+  std::unordered_map<std::string, ItemValue> attrs;
 };
 
 Item::Item() : d(new Private()) {}
@@ -79,4 +80,24 @@ void Item::addChild(v8::Local<v8::Object> obj) {
   if (Item *item = v8pp::class_<Item>::unwrap_object(isolate, obj)) {
     d->children.emplace_back(*item);
   }
+}
+
+void Item::setAttrObject(const std::string &name, v8::Local<v8::Object> obj) {
+  Isolate *isolate = Isolate::GetCurrent();
+  if (ItemValue *item = v8pp::class_<ItemValue>::unwrap_object(isolate, obj)) {
+    d->attrs.emplace(name, *item);
+  }
+}
+
+std::unordered_map<std::string, ItemValue> Item::attrs() const {
+  return d->attrs;
+}
+
+v8::Local<v8::Object> Item::attrObject(const std::string &name) const {
+  const auto it = d->attrs.find(name);
+  if (it == d->attrs.end())
+    return v8::Local<v8::Object>();
+  Isolate *isolate = Isolate::GetCurrent();
+  return v8pp::class_<ItemValue>::import_external(isolate,
+                                                  new ItemValue(it->second));
 }

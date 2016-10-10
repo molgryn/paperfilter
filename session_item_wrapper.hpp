@@ -23,6 +23,7 @@ public:
     Nan::SetAccessor(otl, Nan::New("range").ToLocalChecked(), range);
     Nan::SetAccessor(otl, Nan::New("value").ToLocalChecked(), value);
     Nan::SetAccessor(otl, Nan::New("children").ToLocalChecked(), children);
+    Nan::SetAccessor(otl, Nan::New("attrs").ToLocalChecked(), attrs);
     constructor().Reset(Nan::GetFunction(tpl).ToLocalChecked());
   }
 
@@ -72,6 +73,20 @@ public:
       array->Set(i, SessionItemWrapper::create(items[i]));
     }
     info.GetReturnValue().Set(array);
+  }
+
+  static NAN_GETTER(attrs) {
+    v8::Isolate *isolate = v8::Isolate::GetCurrent();
+    SessionItemWrapper *wrapper =
+        ObjectWrap::Unwrap<SessionItemWrapper>(info.Holder());
+
+    const auto &attrs = wrapper->item.attrs();
+    v8::Local<v8::Object> obj = v8::Object::New(isolate);
+    for (const auto &pair : attrs) {
+      obj->Set(v8pp::to_v8(isolate, pair.first),
+               SessionItemValueWrapper::create(pair.second));
+    }
+    info.GetReturnValue().Set(obj);
   }
 
   static v8::Local<v8::Object> create(const Item &item) {

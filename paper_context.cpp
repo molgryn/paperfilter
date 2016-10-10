@@ -62,6 +62,8 @@ void PaperContext::init(v8::Isolate *isolate) {
   Item_class.set("range", v8pp::property(&Item::range, &Item::setRange));
   Item_class.set("value", v8pp::property(&Item::valueObject, &Item::setValue));
   Item_class.set("addChild", &Item::addChild);
+  Item_class.set("attr", &Item::attrObject);
+  Item_class.set("setAttr", &Item::setAttrObject);
 
   v8pp::class_<ItemValue> ItemValue_class(isolate);
   ItemValue_class.ctor<const v8::FunctionCallbackInfo<v8::Value> &>();

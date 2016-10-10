@@ -6,6 +6,7 @@
 #include <string>
 #include <v8.h>
 #include <vector>
+#include <unordered_map>
 
 class Item {
 public:
@@ -26,6 +27,10 @@ public:
 
   std::vector<Item> children() const;
   void addChild(v8::Local<v8::Object> obj);
+
+  void setAttrObject(const std::string &name, v8::Local<v8::Object> obj);
+  std::unordered_map<std::string, ItemValue> attrs() const;
+  v8::Local<v8::Object> attrObject(const std::string &name) const;
 
 private:
   class Private;
