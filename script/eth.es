@@ -44,7 +44,9 @@ export default class Dissector {
         attr: 'etherType',
         range: '12:14'
       }));
-      layer.setAttr('etherType', new Value(name));
+      let val = {};
+      val[name] = type;
+      layer.setAttr('etherType', new Value(val, 'dripcap/enum'));
 
       if (table[type] != null) {
         layer.namespace = `::Ethernet::<${table[type]}>`;
