@@ -1,6 +1,7 @@
 #include "item.hpp"
 #include "item_value.hpp"
 #include <v8pp/class.hpp>
+#include <v8pp/object.hpp>
 #include <vector>
 
 using namespace v8;
@@ -15,6 +16,30 @@ public:
 };
 
 Item::Item() : d(new Private()) {}
+
+Item::Item(const v8::FunctionCallbackInfo<v8::Value> &args) : d(new Private()) {
+  Isolate *isolate = Isolate::GetCurrent();
+  if (!args[0].IsEmpty() && args[0]->IsObject()) {
+    v8::Local<v8::Object> obj = args[0].As<v8::Object>();
+    v8pp::get_option(isolate, obj, "name", d->name);
+    v8pp::get_option(isolate, obj, "attr", d->attr);
+    v8pp::get_option(isolate, obj, "range", d->range);
+
+    v8::Local<v8::Object> value;
+    if (v8pp::get_option(isolate, obj, "value", value)) {
+      setValue(value);
+    }
+
+    v8::Local<v8::Array> children;
+    if (v8pp::get_option(isolate, obj, "children", children)) {
+      for (uint32_t i = 0; i < children->Length(); ++i) {
+        v8::Local<v8::Value> child = children->Get(i);
+        if (child->IsObject())
+          addChild(child.As<v8::Object>());
+      }
+    }
+  }
+}
 
 Item::Item(const Item &item) : d(new Private(*item.d)) {}
 

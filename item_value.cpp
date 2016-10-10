@@ -60,7 +60,7 @@ ItemValue &ItemValue::operator=(const ItemValue &other) {
   d->base = other.d->base;
   d->num = other.d->num;
   d->str = other.d->str;
-  if (d->buf) {
+  if (other.d->buf) {
     d->buf = other.d->buf->slice();
     d->buf->freeze();
   }

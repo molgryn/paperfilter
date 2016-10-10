@@ -10,6 +10,7 @@
 class Item {
 public:
   Item();
+  Item(const v8::FunctionCallbackInfo<v8::Value> &args);
   Item(const Item &item);
   ~Item();
 

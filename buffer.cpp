@@ -114,8 +114,8 @@ size_t Buffer::length() const { return d->end - d->start; }
 std::unique_ptr<Buffer> Buffer::slice(size_t start, size_t end) const {
   std::unique_ptr<Buffer> buf(new Buffer(d->source));
   buf->d->readonly = d->readonly;
-  buf->d->start = std::min(buf->d->start + start, d->source->size());
-  buf->d->end = std::min(buf->d->start + (end - start), buf->d->end);
+  buf->d->start = std::min(d->start + start, d->source->size());
+  buf->d->end = std::min(buf->d->start + (end - start), d->end);
   return buf;
 }
 

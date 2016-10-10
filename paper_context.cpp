@@ -56,7 +56,7 @@ void PaperContext::init(v8::Isolate *isolate) {
   Layer_class.set("setAttr", &Layer::setAttr);
 
   v8pp::class_<Item> Item_class(isolate);
-  Item_class.ctor<>();
+  Item_class.ctor<const v8::FunctionCallbackInfo<v8::Value> &>();
   Item_class.set("name", v8pp::property(&Item::name, &Item::setName));
   Item_class.set("attr", v8pp::property(&Item::attr, &Item::setAttr));
   Item_class.set("range", v8pp::property(&Item::range, &Item::setRange));
