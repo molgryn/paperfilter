@@ -10,6 +10,7 @@
 class Packet;
 class Item;
 class ItemValue;
+class Buffer;
 
 class Layer {
 public:
@@ -33,6 +34,11 @@ public:
 
   void addItem(v8::Local<v8::Object> obj);
   std::vector<Item> items() const;
+
+  std::unique_ptr<Buffer> payload() const;
+  void setPayload(std::unique_ptr<Buffer> buffer);
+  void setPayloadBuffer(v8::Local<v8::Object> obj);
+  v8::Local<v8::Object> payloadBuffer() const;
 
   void setAttr(const std::string &name, v8::Local<v8::Object> obj);
   std::unordered_map<std::string, ItemValue> attrs() const;

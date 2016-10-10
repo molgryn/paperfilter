@@ -6,6 +6,7 @@
 #include "packet.hpp"
 #include "packet_queue.hpp"
 #include "packet_store.hpp"
+#include "buffer.hpp"
 #include "pcap.hpp"
 #include "permission.hpp"
 #include "stream_chunk.hpp"
@@ -200,6 +201,7 @@ Session::~Session() {}
 void Session::analyze(std::unique_ptr<Packet> pkt) {
   const auto &layer = std::make_shared<Layer>(d->ns);
   layer->setName("Raw Layer");
+  layer->setPayload(pkt->payload());
   pkt->addLayer(layer);
   d->queue.push(std::move(pkt));
 }

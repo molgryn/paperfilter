@@ -19,7 +19,7 @@ export default class Dissector {
     let layer = new Layer('::Ethernet');
     layer.name = 'Ethernet';
 
-    let destination = packet.payload.slice(0, 6);
+    let destination = parentLayer.payload.slice(0, 6);
     layer.addItem(new Item({
       name: 'Destination',
       attr: 'dst',
@@ -27,7 +27,7 @@ export default class Dissector {
     }));
     layer.setAttr('dst', new Value(destination, 'dripcap/mac'));
 
-    let source = packet.payload.slice(6, 12);
+    let source = parentLayer.payload.slice(6, 12);
     layer.addItem(new Item({
       name: 'Source',
       attr: 'src',

@@ -2,6 +2,7 @@
 #define SESSION_LAYER_WRAPPER_HPP
 
 #include "layer.hpp"
+#include "buffer.hpp"
 #include "session_item_wrapper.hpp"
 #include <nan.h>
 #include <node_buffer.h>
@@ -24,6 +25,7 @@ public:
     Nan::SetAccessor(otl, Nan::New("name").ToLocalChecked(), name);
     Nan::SetAccessor(otl, Nan::New("summary").ToLocalChecked(), summary);
     Nan::SetAccessor(otl, Nan::New("layers").ToLocalChecked(), layers);
+    Nan::SetAccessor(otl, Nan::New("payload").ToLocalChecked(), payload);
     Nan::SetAccessor(otl, Nan::New("items").ToLocalChecked(), items);
     Nan::SetAccessor(otl, Nan::New("attrs").ToLocalChecked(), attrs);
     Nan::SetAccessor(otl, Nan::New("extension").ToLocalChecked(), extension);
@@ -117,6 +119,25 @@ public:
                  SessionItemValueWrapper::create(pair.second));
       }
       info.GetReturnValue().Set(obj);
+    }
+  }
+
+  static NAN_GETTER(payload) {
+    v8::Isolate *isolate = v8::Isolate::GetCurrent();
+    SessionLayerWrapper *wrapper =
+        ObjectWrap::Unwrap<SessionLayerWrapper>(info.Holder());
+
+    if (const std::shared_ptr<const Layer> &layer = wrapper->layer.lock()) {
+      Buffer *buf = layer->payload().release();
+      v8::Local<v8::Object> buffer =
+          node::Buffer::New(isolate, const_cast<char *>(buf->data()),
+                            buf->length(),
+                            [](char *data, void *hint) {
+                              delete static_cast<Buffer *>(hint);
+                            },
+                            buf)
+              .ToLocalChecked();
+      info.GetReturnValue().Set(buffer);
     }
   }
 

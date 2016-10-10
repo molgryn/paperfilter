@@ -1,5 +1,6 @@
 #include "layer.hpp"
 #include "item.hpp"
+#include "buffer.hpp"
 #include <v8pp/class.hpp>
 
 using namespace v8;
@@ -14,6 +15,7 @@ public:
   std::weak_ptr<Packet> pkt;
   std::vector<Item> items;
   std::unordered_map<std::string, ItemValue> attrs;
+  std::unique_ptr<Buffer> payload = std::unique_ptr<Buffer>(new Buffer());
 };
 
 Layer::Layer(const std::string &ns) : d(std::make_shared<Private>()) {
@@ -58,6 +60,25 @@ void Layer::addItem(v8::Local<v8::Object> obj) {
 }
 
 std::vector<Item> Layer::items() const { return d->items; }
+
+std::unique_ptr<Buffer> Layer::payload() const { return d->payload->slice(); }
+
+void Layer::setPayload(std::unique_ptr<Buffer> buffer) {
+  d->payload = buffer->slice();
+}
+
+void Layer::setPayloadBuffer(v8::Local<v8::Object> obj) {
+  Isolate *isolate = Isolate::GetCurrent();
+  if (Buffer *buffer = v8pp::class_<Buffer>::unwrap_object(isolate, obj)) {
+    d->payload = buffer->slice();
+  }
+}
+
+v8::Local<v8::Object> Layer::payloadBuffer() const {
+  Isolate *isolate = Isolate::GetCurrent();
+  return v8pp::class_<Buffer>::import_external(isolate,
+                                               d->payload->slice().release());
+}
 
 void Layer::setAttr(const std::string &name, v8::Local<v8::Object> obj) {
   Isolate *isolate = Isolate::GetCurrent();
