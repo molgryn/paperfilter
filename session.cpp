@@ -158,10 +158,10 @@ Session::Session(v8::Local<v8::Value> option) : d(new Private()) {
   dissCtx->packetCb = [this](const std::shared_ptr<Packet> &pkt) {
     d->store.insert(pkt);
   };
-  dissCtx->streamsCb =
-      [this](uint32_t seq, std::vector<std::unique_ptr<StreamChunk>> streams) {
-        d->streamDispatcher->insert(seq, std::move(streams));
-      };
+  dissCtx->streamsCb = [this](
+      uint32_t seq, std::vector<std::unique_ptr<StreamChunk>> streams) {
+    d->streamDispatcher->insert(seq, std::move(streams));
+  };
   dissCtx->dissectors.swap(dissectors);
   dissCtx->errorCb =
       std::bind(&Private::error, std::ref(d), std::placeholders::_1);
@@ -174,16 +174,16 @@ Session::Session(v8::Local<v8::Value> option) : d(new Private()) {
   streamCtx->dissectors.swap(streamDissectors);
   streamCtx->errorCb =
       std::bind(&Private::error, std::ref(d), std::placeholders::_1);
-  streamCtx->streamsCb =
-      [this](std::vector<std::unique_ptr<StreamChunk>> streams) {
-        d->streamDispatcher->insert(std::move(streams));
-      };
-  streamCtx->vpacketsCb =
-      [this](std::vector<std::unique_ptr<VirtualPacket>> vpackets) {
-        for (auto &vp : vpackets) {
-          d->queue.push(std::unique_ptr<Packet>(new Packet(*vp)));
-        }
-      };
+  streamCtx->streamsCb = [this](
+      std::vector<std::unique_ptr<StreamChunk>> streams) {
+    d->streamDispatcher->insert(std::move(streams));
+  };
+  streamCtx->vpacketsCb = [this](
+      std::vector<std::unique_ptr<VirtualPacket>> vpackets) {
+    for (auto &vp : vpackets) {
+      d->queue.push(std::unique_ptr<Packet>(new Packet(*vp)));
+    }
+  };
   d->streamDispatcher.reset(new StreamDispatcher(streamCtx));
 
   auto pcapCtx = std::make_shared<Pcap::Context>();

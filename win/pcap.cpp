@@ -173,15 +173,14 @@ void Pcap::start() {
 
   d->thread = std::thread([this]() {
     pcap_loop(
-        d->pcap, 0,
-        [](u_char *user, const struct pcap_pkthdr *h, const u_char *bytes) {
+        d->pcap,
+        0, [](u_char *user, const struct pcap_pkthdr *h, const u_char *bytes) {
           Pcap &self = *reinterpret_cast<Pcap *>(user);
           if (self.d->ctx->packetCb) {
             self.d->ctx->packetCb(
                 std::unique_ptr<Packet>(new Packet(h, bytes)));
           }
-        },
-        reinterpret_cast<u_char *>(this));
+        }, reinterpret_cast<u_char *>(this));
     {
       std::lock_guard<std::mutex> lock(d->mutex);
       pcap_close(d->pcap);

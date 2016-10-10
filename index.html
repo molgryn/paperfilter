@@ -49,7 +49,7 @@
             sess.analyze(pkt);
           }
         });
-        sess.filter('pkt', 'payload.length > 100');
+        sess.filter('pkt', 'payload.length > 1000');
         console.log(sess.permission);
         console.log(sess.devices);
         console.log(sess);
@@ -61,8 +61,8 @@
           document.getElementById("aa").appendChild(document.createTextNode(sess.namespace));
         })
         sess.on('filter', (name, packets) => {
-          console.log(name);
-          console.log(packets);
+          console.log('fil : ' + name);
+          console.log('fil : ' + packets);
           document.getElementById("bb").appendChild(document.createTextNode(sess.namespace));
         })
         document.getElementById("cc").appendChild(document.createTextNode(sess.namespace));

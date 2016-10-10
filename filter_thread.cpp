@@ -53,18 +53,36 @@ FilterThread::Private::Private(const std::shared_ptr<Context> &ctx) : ctx(ctx) {
       PaperContext::init(isolate);
 
       v8::Local<v8::Value> filter = v8pp::json_parse(isolate, ctx.filter);
+      v8::Local<v8::Object> moduleObj = v8::Object::New(isolate);
+      context->Global()->Set(v8::String::NewFromUtf8(isolate, "module"),
+                             moduleObj);
 
       v8::Local<v8::Function> func;
       Nan::MaybeLocal<Nan::BoundScript> script =
-          Nan::CompileScript(v8pp::to_v8(isolate, "(function() {return true})"));
+          Nan::CompileScript(v8pp::to_v8(isolate, ctx.script));
+
       if (!script.IsEmpty()) {
-        Nan::MaybeLocal<v8::Value> result =
-            Nan::RunScript(script.ToLocalChecked());
-        if (!result.IsEmpty()) {
-          v8::Local<v8::Value> val = result.ToLocalChecked();
-          if (val->IsFunction()) {
-            func = val.As<v8::Function>();
-          }
+        Nan::RunScript(script.ToLocalChecked());
+        v8::Local<v8::Value> result =
+            moduleObj->Get(v8::String::NewFromUtf8(isolate, "exports"));
+
+        if (!result.IsEmpty() && result->IsFunction()) {
+          func = result.As<v8::Function>();
+        }
+      }
+
+      if (func.IsEmpty()) {
+        if (ctx.errorCb) {
+          Nan::Utf8String str(try_catch.Exception());
+          if (*str)
+            ctx.errorCb(*str);
+        }
+      } else {
+        v8::Handle<v8::Value> args[1] = {filter};
+        v8::Local<v8::Value> result =
+            func->Call(isolate->GetCurrentContext()->Global(), 1, args);
+        if (!result.IsEmpty() && result->IsFunction()) {
+          func = result.As<v8::Function>();
         }
       }
 
