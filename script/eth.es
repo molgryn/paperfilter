@@ -35,6 +35,13 @@ export default class Dissector {
     }));
     layer.setAttr('src', new Value(source, 'dripcap/mac'));
 
+    layer.payload = parentLayer.payload.slice(14);
+    layer.addItem(new Item({
+      name: 'Payload',
+      value: new Value(layer.payload),
+      range: '14:'
+    }));
+
     return [layer];
   }
 };
