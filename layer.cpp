@@ -9,6 +9,7 @@ class Layer::Private {
 public:
   std::string ns;
   std::string name;
+  std::string alias;
   std::string summary;
   std::string extension;
   std::unordered_map<std::string, std::shared_ptr<Layer>> layers;
@@ -31,6 +32,10 @@ void Layer::setNs(const std::string &ns) { d->ns = ns; }
 std::string Layer::name() const { return d->name; }
 
 void Layer::setName(const std::string &name) { d->name = name; }
+
+std::string Layer::alias() const { return d->alias; }
+
+void Layer::setAlias(const std::string &alias) { d->alias = alias; }
 
 std::string Layer::summary() const { return d->summary; };
 
