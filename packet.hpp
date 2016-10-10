@@ -35,6 +35,7 @@ public:
 
   void addLayer(const std::shared_ptr<Layer> &layer);
   const std::unordered_map<std::string, std::shared_ptr<Layer>> &layers() const;
+  v8::Local<v8::Object> layersObject() const;
 
 private:
   class Private;

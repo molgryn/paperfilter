@@ -98,3 +98,14 @@ const std::unordered_map<std::string, std::shared_ptr<Layer>> &
 Packet::layers() const {
   return d->layers;
 }
+
+v8::Local<v8::Object> Packet::layersObject() const {
+  Isolate *isolate = Isolate::GetCurrent();
+  v8::Local<v8::Object> obj = v8::Object::New(isolate);
+  for (const auto &pair : d->layers) {
+    obj->Set(
+        v8pp::to_v8(isolate, pair.first),
+        v8pp::class_<Layer>::reference_external(isolate, pair.second.get()));
+  }
+  return obj;
+}

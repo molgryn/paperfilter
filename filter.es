@@ -1,4 +1,19 @@
 module.exports = function makeFilter(node) {
+  return (function(node) {
+    switch (node.type) {
+      case 'Identifier':
+        return function(pkt) {
+          if (pkt[node.name] != null) {
+            return pkt[node.name];
+          }
+          return null;
+        };
+        break;
+    }
+  });
+};
+
+module.exports = function makeFilter(node) {
   'use strict';
   return (function(node) {
     let res;

@@ -19,6 +19,7 @@ void PaperContext::init(v8::Isolate *isolate) {
   Packet_class.set("ts_nsec", v8pp::property(&Packet::ts_nsec));
   Packet_class.set("length", v8pp::property(&Packet::length));
   Packet_class.set("payload", v8pp::property(&Packet::payloadBuffer));
+  Packet_class.set("layers", v8pp::property(&Packet::layersObject));
 
   v8pp::class_<VirtualPacket> VirtualPacket_class(isolate);
   VirtualPacket_class.ctor<const std::string &>();
