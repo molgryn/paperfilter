@@ -55,7 +55,6 @@ void PaperContext::init(v8::Isolate *isolate) {
   Layer_class.set("payload", v8pp::property(&Layer::payloadBuffer,
                                             &Layer::setPayloadBuffer));
   Layer_class.set("layers", v8pp::property(&Layer::layersObject));
-  Layer_class.set("attrs", v8pp::property(&Layer::attrsObject));
   Layer_class.set("addItem", &Layer::addItem);
   Layer_class.set("attr", &Layer::attr);
   Layer_class.set("setAttr", &Layer::setAttr);
@@ -66,7 +65,7 @@ void PaperContext::init(v8::Isolate *isolate) {
   Item_class.set("range", v8pp::property(&Item::range, &Item::setRange));
   Item_class.set("value", v8pp::property(&Item::valueObject, &Item::setValue));
   Item_class.set("addChild", &Item::addChild);
-  Item_class.set("attr", &Item::attrObject);
+  Item_class.set("attr", &Item::attr);
   Item_class.set("setAttr", &Item::setAttrObject);
 
   v8pp::class_<ItemValue> ItemValue_class(isolate);

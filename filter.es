@@ -143,6 +143,12 @@ module.exports = function makeFilter(node) {
         try {
           let obj = objFunc(pkt);
           let prop = propFunc(pkt);
+          if (typeof obj.attr === 'function') {
+            let attr = obj.attr(prop);
+            if (attr != null) {
+              return attr;
+            }
+          }
           if ((obj.attrs != null) && obj.attrs.hasOwnProperty(prop)) {
             return obj.attrs[prop];
           }

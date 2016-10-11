@@ -109,21 +109,10 @@ std::unordered_map<std::string, ItemValue> Layer::attrs() const {
   return d->attrs;
 }
 
-v8::Local<v8::Object> Layer::attrsObject() const {
-  Isolate *isolate = Isolate::GetCurrent();
-  v8::Local<v8::Object> obj = v8::Object::New(isolate);
-  for (const auto &pair : d->attrs) {
-    obj->Set(v8pp::to_v8(isolate, pair.first),
-             v8pp::class_<ItemValue>::import_external(
-                 isolate, new ItemValue(pair.second)));
-  }
-  return obj;
-}
-
-v8::Local<v8::Object> Layer::attr(const std::string &name) const {
+v8::Local<v8::Value> Layer::attr(const std::string &name) const {
   const auto it = d->attrs.find(name);
   if (it == d->attrs.end())
-    return v8::Local<v8::Object>();
+    return v8::Local<v8::Value>();
   Isolate *isolate = Isolate::GetCurrent();
   return v8pp::class_<ItemValue>::import_external(isolate,
                                                   new ItemValue(it->second));

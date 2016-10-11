@@ -87,10 +87,10 @@ std::unordered_map<std::string, ItemValue> Item::attrs() const {
   return d->attrs;
 }
 
-v8::Local<v8::Object> Item::attrObject(const std::string &name) const {
+v8::Local<v8::Value> Item::attr(const std::string &name) const {
   const auto it = d->attrs.find(name);
   if (it == d->attrs.end())
-    return v8::Local<v8::Object>();
+    return v8::Local<v8::Value>();
   Isolate *isolate = Isolate::GetCurrent();
   return v8pp::class_<ItemValue>::import_external(isolate,
                                                   new ItemValue(it->second));
