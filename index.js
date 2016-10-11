@@ -15,7 +15,7 @@ class Session extends EventEmitter {
     this._sess = new paperfilter.Session(option);
     this._sess.errorCallback = (err) => {
       let data = JSON.parse(err);
-      let error = new Error(obj.message);
+      let error = new Error(data.message);
       error.data = data;
       this.emit('error', error);
     };

@@ -55,9 +55,6 @@ export default class Dissector {
       }
     }
 
-    if (Math.random() < 0.5)
-      a.x = 0;
-
     layer.payload = parentLayer.payload.slice(14);
     layer.addItem(new Item({
       name: 'Payload',

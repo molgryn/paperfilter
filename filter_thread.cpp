@@ -59,8 +59,8 @@ FilterThread::Private::Private(const std::shared_ptr<Context> &ctx) : ctx(ctx) {
                              moduleObj);
 
       v8::Local<v8::Function> func;
-      Nan::MaybeLocal<Nan::BoundScript> script =
-          Nan::CompileScript(v8pp::to_v8(isolate, ctx.script));
+      Nan::MaybeLocal<Nan::BoundScript> script = Nan::CompileScript(
+          v8pp::to_v8(isolate, "(function(){" + ctx.script + "})()"));
 
       if (!script.IsEmpty()) {
         Nan::RunScript(script.ToLocalChecked());

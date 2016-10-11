@@ -16,17 +16,21 @@
         dissectors: [
           {
             namespaces: [
-              '::<Ethernet>',
-              /::<Ethernet>/
+              '::<Ethernet>'
             ],
             script: __dirname + '/script/eth.es'
+          },
+          {
+            namespaces: [
+              '::Ethernet::<IPv4>'
+            ],
+            script: __dirname + '/script/ipv4.es'
           }
         ],
         stream_dissectors: [
           {
             namespaces: [
-              '::Ethernet::TCP',
-              /::Ethernet::TCP/
+              '::Ethernet::TCP'
             ],
             script: __dirname + '/script/str.es'
           }

@@ -78,7 +78,7 @@ StreamDissectorThread::Private::Private(const std::shared_ptr<Context> &ctx)
 
         v8::Local<v8::Function> func;
         Nan::MaybeLocal<Nan::BoundScript> script = Nan::CompileScript(
-            v8pp::to_v8(isolate, diss.script),
+            v8pp::to_v8(isolate, "(function(){" + diss.script + "})()"),
             v8::ScriptOrigin(v8pp::to_v8(isolate, diss.resourceName)));
         if (!script.IsEmpty()) {
           Nan::RunScript(script.ToLocalChecked());
