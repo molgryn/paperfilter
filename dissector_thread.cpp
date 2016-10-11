@@ -4,6 +4,7 @@
 #include "packet_queue.hpp"
 #include "paper_context.hpp"
 #include "stream_chunk.hpp"
+#include "error.hpp"
 #include <cstdlib>
 #include <nan.h>
 #include <thread>
@@ -67,8 +68,9 @@ DissectorThread::Private::Private(const std::shared_ptr<Context> &ctx)
                                moduleObj);
 
         v8::Local<v8::Function> func;
-        Nan::MaybeLocal<Nan::BoundScript> script =
-            Nan::CompileScript(v8pp::to_v8(isolate, diss.script));
+        Nan::MaybeLocal<Nan::BoundScript> script = Nan::CompileScript(
+            v8pp::to_v8(isolate, diss.script),
+            v8::ScriptOrigin(v8pp::to_v8(isolate, diss.resourceName)));
         if (!script.IsEmpty()) {
           Nan::RunScript(script.ToLocalChecked());
           v8::Local<v8::Value> result =
@@ -80,9 +82,7 @@ DissectorThread::Private::Private(const std::shared_ptr<Context> &ctx)
         }
         if (func.IsEmpty()) {
           if (ctx.errorCb) {
-            Nan::Utf8String str(try_catch.Exception());
-            if (*str)
-              ctx.errorCb(*str);
+            ctx.errorCb(messageToJson(try_catch.Message()));
           }
         } else {
           dissectors.push_back(
@@ -119,9 +119,7 @@ DissectorThread::Private::Private(const std::shared_ptr<Context> &ctx)
               v8::Local<v8::Object> obj = func->NewInstance();
               if (obj.IsEmpty()) {
                 if (ctx.errorCb) {
-                  Nan::Utf8String str(try_catch.Exception());
-                  if (*str)
-                    ctx.errorCb(*str);
+                  ctx.errorCb(messageToJson(try_catch.Message()));
                 }
               } else {
                 v8::Local<v8::Value> analyze =
@@ -143,9 +141,7 @@ DissectorThread::Private::Private(const std::shared_ptr<Context> &ctx)
 
                   if (result.IsEmpty()) {
                     if (ctx.errorCb) {
-                      Nan::Utf8String str(try_catch.Exception());
-                      if (*str)
-                        ctx.errorCb(*str);
+                      ctx.errorCb(messageToJson(try_catch.Message()));
                     }
                   } else if (result->IsArray()) {
                     v8::Local<v8::Array> array = result.As<v8::Array>();

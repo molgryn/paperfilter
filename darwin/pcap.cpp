@@ -1,5 +1,6 @@
 #include "pcap.hpp"
 #include "../packet.hpp"
+#include <json11.hpp>
 #include <mutex>
 #include <pcap.h>
 #include <signal.h>
@@ -34,7 +35,10 @@ std::vector<Pcap::Device> Pcap::devices() const {
   char err[PCAP_ERRBUF_SIZE] = {'\0'};
   if (pcap_findalldevs(&alldevsp, err) < 0) {
     if (d->ctx->errorCb) {
-      d->ctx->errorCb(std::string("pcap_findalldevs() failed: ") + err);
+      json11::Json error = json11::Json::object{
+          {"message", std::string("pcap_findalldevs() failed: ") + err},
+          {"domain", "pcap"}};
+      d->ctx->errorCb(error.dump());
     }
     return devs;
   }
@@ -109,14 +113,19 @@ void Pcap::start() {
                            500, err);
   if (!d->pcap) {
     if (d->ctx->errorCb) {
-      d->ctx->errorCb(std::string("pcap_open_live() failed: ") + err);
+      json11::Json error = json11::Json::object{
+          {"message", std::string("pcap_open_live() failed: ") + err},
+          {"domain", "pcap"}};
+      d->ctx->errorCb(error.dump());
     }
     return;
   }
 
   if (d->bpf.bf_len > 0 && pcap_setfilter(d->pcap, &d->bpf) < 0) {
     if (d->ctx->errorCb) {
-      d->ctx->errorCb("pcap_setfilter() failed");
+      json11::Json error = json11::Json::object{
+          {"message", "pcap_setfilter() failed"}, {"domain", "pcap"}};
+      d->ctx->errorCb(error.dump());
     }
     pcap_close(d->pcap);
     d->pcap = nullptr;

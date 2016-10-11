@@ -2,6 +2,7 @@
 #include "packet.hpp"
 #include "packet_store.hpp"
 #include "paper_context.hpp"
+#include "error.hpp"
 #include <cstdlib>
 #include <nan.h>
 #include <thread>
@@ -73,9 +74,7 @@ FilterThread::Private::Private(const std::shared_ptr<Context> &ctx) : ctx(ctx) {
 
       if (func.IsEmpty()) {
         if (ctx.errorCb) {
-          Nan::Utf8String str(try_catch.Exception());
-          if (*str)
-            ctx.errorCb(*str);
+          ctx.errorCb(messageToJson(try_catch.Message()));
         }
       } else {
         v8::Handle<v8::Value> args[1] = {filter};
@@ -88,9 +87,7 @@ FilterThread::Private::Private(const std::shared_ptr<Context> &ctx) : ctx(ctx) {
 
       if (func.IsEmpty()) {
         if (ctx.errorCb) {
-          Nan::Utf8String str(try_catch.Exception());
-          if (*str)
-            ctx.errorCb(*str);
+          ctx.errorCb(messageToJson(try_catch.Message()));
         }
       } else {
         while (true) {
@@ -114,9 +111,7 @@ FilterThread::Private::Private(const std::shared_ptr<Context> &ctx) : ctx(ctx) {
             v8pp::class_<Packet>::unreference_external(isolate, pkt.get());
             if (result.IsEmpty()) {
               if (ctx.errorCb) {
-                Nan::Utf8String str(try_catch.Exception());
-                if (*str)
-                  ctx.errorCb(*str);
+                ctx.errorCb(messageToJson(try_catch.Message()));
               }
             } else if (result->BooleanValue()) {
               ctx.filterdPackets.push_back(pkt->seq());

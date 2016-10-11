@@ -14,7 +14,10 @@ class Session extends EventEmitter {
 
     this._sess = new paperfilter.Session(option);
     this._sess.errorCallback = (err) => {
-      this.emit('error', new Error(err));
+      let data = JSON.parse(err);
+      let error = new Error(obj.message);
+      error.data = data;
+      this.emit('error', error);
     };
     this._sess.packetCallback = (stat) => {
       this.emit('packets', stat);
@@ -48,7 +51,8 @@ class Session extends EventEmitter {
       }).then((code) => {
         sessOption.dissectors.push({
           namespaces: diss.namespaces,
-          script: code
+          script: code,
+          resourceName: diss.script
         });
       }));
     }
@@ -68,7 +72,8 @@ class Session extends EventEmitter {
       }).then((code) => {
         sessOption.stream_dissectors.push({
           namespaces: diss.namespaces,
-          script: code
+          script: code,
+          resourceName: diss.script
         });
       }));
     }

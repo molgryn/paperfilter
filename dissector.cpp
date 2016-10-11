@@ -16,4 +16,5 @@ Dissector::Dissector(v8::Local<v8::Object> option) {
     }
   }
   v8pp::get_option(isolate, option, "script", script);
+  v8pp::get_option(isolate, option, "resourceName", resourceName);
 }

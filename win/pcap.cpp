@@ -75,7 +75,10 @@ std::vector<Pcap::Device> Pcap::devices() const {
   char err[PCAP_ERRBUF_SIZE] = {'\0'};
   if (pcap_findalldevs(&alldevsp, err) < 0) {
     if (d->ctx->errorCb) {
-      d->ctx->errorCb(std::string("pcap_findalldevs() failed: ") + err);
+      json11::Json error = json11::Json::object{
+          {"message", std::string("pcap_findalldevs() failed: ") + err},
+          {"domain", "pcap"}};
+      d->ctx->errorCb(error.dump());
     }
     return devs;
   }
@@ -157,44 +160,52 @@ void Pcap::start() {
                            500, err);
   if (!d->pcap) {
     if (d->ctx->errorCb) {
-      d->ctx->errorCb(std::string("pcap_open_live() failed: ") + err);
+      json11::Json error = json11::Json::object{
+          {"message", std::string("pcap_open_live() failed: ") + err},
+          {"domain", "pcap"}};
+      d->ctx->errorCb(error.dump());
     }
     return;
   }
 
   if (d->bpf.bf_len > 0 && pcap_setfilter(d->pcap, &d->bpf) < 0) {
     if (d->ctx->errorCb) {
-      d->ctx->errorCb("pcap_setfilter() failed");
-    }
-    pcap_close(d->pcap);
-    d->pcap = nullptr;
-    return;
-  }
-
-  d->thread = std::thread([this]() {
-    pcap_loop(
-        d->pcap,
-        0, [](u_char *user, const struct pcap_pkthdr *h, const u_char *bytes) {
-          Pcap &self = *reinterpret_cast<Pcap *>(user);
-          if (self.d->ctx->packetCb) {
-            self.d->ctx->packetCb(
-                std::unique_ptr<Packet>(new Packet(h, bytes)));
-          }
-        }, reinterpret_cast<u_char *>(this));
-    {
-      std::lock_guard<std::mutex> lock(d->mutex);
+      json11::Json error = json11::Json::object {
+        {
+          "message", "pcap_setfilter() failed", { "domain", "pcap" }
+        };
+        d->ctx->errorCb(error.dump());
+      }
       pcap_close(d->pcap);
       d->pcap = nullptr;
+      return;
     }
-  });
-}
 
-void Pcap::stop() {
-  {
-    std::lock_guard<std::mutex> lock(d->mutex);
-    if (d->pcap)
-      pcap_breakloop(d->pcap);
+    d->thread = std::thread([this]() {
+      pcap_loop(
+          d->pcap, 0,
+          [](u_char *user, const struct pcap_pkthdr *h, const u_char *bytes) {
+            Pcap &self = *reinterpret_cast<Pcap *>(user);
+            if (self.d->ctx->packetCb) {
+              self.d->ctx->packetCb(
+                  std::unique_ptr<Packet>(new Packet(h, bytes)));
+            }
+          },
+          reinterpret_cast<u_char *>(this));
+      {
+        std::lock_guard<std::mutex> lock(d->mutex);
+        pcap_close(d->pcap);
+        d->pcap = nullptr;
+      }
+    });
   }
-  if (d->thread.joinable())
-    d->thread.join();
-}
+
+  void Pcap::stop() {
+    {
+      std::lock_guard<std::mutex> lock(d->mutex);
+      if (d->pcap)
+        pcap_breakloop(d->pcap);
+    }
+    if (d->thread.joinable())
+      d->thread.join();
+  }
