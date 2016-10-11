@@ -9,7 +9,6 @@ using namespace v8;
 class Item::Private {
 public:
   std::string name;
-  std::string attr;
   std::string range;
   ItemValue value;
   std::vector<Item> children;
@@ -23,7 +22,6 @@ Item::Item(const v8::FunctionCallbackInfo<v8::Value> &args) : d(new Private()) {
   if (!args[0].IsEmpty() && args[0]->IsObject()) {
     v8::Local<v8::Object> obj = args[0].As<v8::Object>();
     v8pp::get_option(isolate, obj, "name", d->name);
-    v8pp::get_option(isolate, obj, "attr", d->attr);
     v8pp::get_option(isolate, obj, "range", d->range);
 
     v8::Local<v8::Object> value;
@@ -49,10 +47,6 @@ Item::~Item() {}
 std::string Item::name() const { return d->name; }
 
 void Item::setName(const std::string &name) { d->name = name; }
-
-std::string Item::attr() const { return d->attr; }
-
-void Item::setAttr(const std::string &attr) { d->attr = attr; }
 
 std::string Item::range() const { return d->range; }
 

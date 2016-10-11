@@ -6,21 +6,21 @@ export default class Dissector {
     layer.name = 'Ethernet';
     layer.alias = 'eth';
 
-    let destination = parentLayer.payload.slice(0, 6);
+    let destination = new Value(parentLayer.payload.slice(0, 6), 'dripcap/mac');
     layer.addItem(new Item({
       name: 'Destination',
-      attr: 'dst',
+      value: destination,
       range: '0:6'
     }));
-    layer.setAttr('dst', new Value(destination, 'dripcap/mac'));
+    layer.setAttr('dst', destination);
 
-    let source = parentLayer.payload.slice(6, 12);
+    let source = new Value(parentLayer.payload.slice(6, 12), 'dripcap/mac');
     layer.addItem(new Item({
       name: 'Source',
-      attr: 'src',
+      value: source,
       range: '6:12'
     }));
-    layer.setAttr('src', new Value(source, 'dripcap/mac'));
+    layer.setAttr('src', source);
 
     let type = parentLayer.payload.readUInt16BE(12);
     if (type <= 1500) {
@@ -40,14 +40,15 @@ export default class Dissector {
       };
 
       let name = table[type] || 'Unknown';
-      layer.addItem(new Item({
-        name: 'EtherType',
-        attr: 'etherType',
-        range: '12:14'
-      }));
       let val = {};
       val[name] = type;
-      layer.setAttr('etherType', new Value(val, 'dripcap/enum'));
+      let etherType = new Value(val, 'dripcap/enum');
+      layer.addItem(new Item({
+        name: 'EtherType',
+        value: etherType,
+        range: '12:14'
+      }));
+      layer.setAttr('etherType', etherType);
 
       if (table[type] != null) {
         layer.namespace = `::Ethernet::<${table[type]}>`;
