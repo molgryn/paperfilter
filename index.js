@@ -7,14 +7,19 @@ const esprima = require('esprima');
 class Session extends EventEmitter {
   constructor(option) {
     super();
-    this.sess = new paperfilter.Session(option);
-    this.sess.errorCallback = (err) => {
+
+    let module = {};
+    (new Function('module', option.filterScript))(module);
+    this._filter = module.exports;
+
+    this._sess = new paperfilter.Session(option);
+    this._sess.errorCallback = (err) => {
       this.emit('error', err);
     };
-    this.sess.packetCallback = (stat) => {
+    this._sess.packetCallback = (stat) => {
       this.emit('packets', stat);
     };
-    this.sess.filterCallback = (name, packets) => {
+    this._sess.filterCallback = (name, packets) => {
       this.emit('filter', name, packets);
     };
   }
@@ -87,7 +92,7 @@ class Session extends EventEmitter {
   }
 
   analyze(pkt) {
-    return this.sess.analyze(pkt);
+    return this._sess.analyze(pkt);
   }
 
   filter(name, filter) {
@@ -100,65 +105,65 @@ class Session extends EventEmitter {
         const root = ast.body[0];
         if (root.type !== "ExpressionStatement")
           throw new SyntaxError();
-          console.log(root.expression)
+        this._filter(root.expression);
         body = JSON.stringify(root.expression);
         break;
       default:
         throw new SyntaxError();
     }
-    return this.sess.filter(name, body);
+    return this._sess.filter(name, body);
   }
 
   get(seq) {
-    return this.sess.get(seq);
+    return this._sess.get(seq);
   }
 
   get namespace() {
-    return this.sess.namespace;
+    return this._sess.namespace;
   }
 
   get permission() {
-    return this.sess.permission;
+    return this._sess.permission;
   }
 
   get devices() {
-    return this.sess.devices;
+    return this._sess.devices;
   }
 
   get interface() {
-    return this.sess.interface;
+    return this._sess.interface;
   }
 
   set interface(ifs) {
-    this.sess.interface = ifs;
+    this._sess.interface = ifs;
   }
 
   get promiscuous() {
-    return this.sess.promiscuous;
+    return this._sess.promiscuous;
   }
 
   set promiscuous(promisc) {
-    this.sess.promiscuous = promisc;
+    this._sess.promiscuous = promisc;
   }
 
   get snaplen() {
-    return this.sess.snaplen;
+    return this._sess.snaplen;
   }
 
   set snaplen(len) {
-    this.sess.snaplen = len;
+    this._sess.snaplen = len;
   }
 
   setBPF(bpf) {
-    this.sess.setBPF(bpf);
+    this._sess.setBPF(bpf);
   }
 
   start() {
-    this.sess.start();
+    this._sess.start();
   }
 
   stop() {
-    this.sess.stop();
+    this._sess.stop();
   }
 }
 

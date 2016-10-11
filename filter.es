@@ -1,4 +1,3 @@
-
 module.exports = function makeFilter(node) {
   switch (node.type) {
     case 'LogicalExpression':
@@ -149,13 +148,13 @@ module.exports = function makeFilter(node) {
               return attr;
             }
           }
-          if ((obj.attrs != null) && obj.attrs.hasOwnProperty(prop)) {
+          if ((obj.attrs != null) && prop in obj.attrs) {
             return obj.attrs[prop];
           }
-          if ((obj.data != null) && obj.data.hasOwnProperty(prop)) {
+          if ((obj.data != null) && prop in obj.data) {
             return obj.data[prop];
           }
-          if (obj.hasOwnProperty(prop)) {
+          if (prop in obj) {
             return obj[prop];
           }
         } catch (error) {
@@ -166,7 +165,7 @@ module.exports = function makeFilter(node) {
     }
     case 'Identifier':
       return function(pkt) {
-        if (pkt.hasOwnProperty(node.name)) {
+        if (node.name in pkt) {
           return pkt[node.name];
         }
         let find = function(layers, name) {
@@ -193,7 +192,7 @@ module.exports = function makeFilter(node) {
           return pkt;
         }
         let global = ('global', eval)('this');
-        if (global.hasOwnProperty(node.name)) {
+        if (node.name in global) {
           return global[node.name];
         }
         return null;
