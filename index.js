@@ -14,7 +14,7 @@ class Session extends EventEmitter {
 
     this._sess = new paperfilter.Session(option);
     this._sess.errorCallback = (err) => {
-      this.emit('error', err);
+      this.emit('error', new Error(err));
     };
     this._sess.packetCallback = (stat) => {
       this.emit('packets', stat);
