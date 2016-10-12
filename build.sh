@@ -18,6 +18,8 @@ if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then
 fi
 
 if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then
+  brew update > /dev/null
+  brew install jq
   curl -o- -L https://yarnpkg.com/install.sh | bash
   export PATH="$HOME/.yarn/bin:$PATH"
 fi
