@@ -19,4 +19,4 @@ void Init(v8::Local<v8::Object> exports) {
   SessionWrapper::Init(exports);
 }
 
-NODE_MODULE(hello, Init)
+NODE_MODULE(paperfilter, Init)
