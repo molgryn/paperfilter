@@ -2,6 +2,8 @@ const paperfilter = require('bindings')('paperfilter');
 const EventEmitter = require('events');
 const rollup = require('rollup').rollup;
 const babel = require('rollup-plugin-babel');
+const nodeResolve = require('rollup-plugin-node-resolve');
+const commonjs = require('rollup-plugin-commonjs');
 const esprima = require('esprima');
 
 class Session extends EventEmitter {
@@ -39,7 +41,11 @@ class Session extends EventEmitter {
       tasks.push(rollup({
         entry: diss.script,
         external: ['dripcap'],
-        plugins: [babel()],
+        plugins: [
+          babel(),
+          nodeResolve({ jsnext: true, main: true }),
+          commonjs()
+        ],
         onwarn: (e) => {
           console.log(e)
         }
@@ -47,6 +53,7 @@ class Session extends EventEmitter {
         const result = bundle.generate({
           format: 'cjs'
         });
+        console.log(result.code)
         return result.code;
       }).then((code) => {
         sessOption.dissectors.push({
@@ -60,7 +67,11 @@ class Session extends EventEmitter {
       tasks.push(rollup({
         entry: diss.script,
         external: ['dripcap'],
-        plugins: [babel()],
+        plugins: [
+          babel(),
+          nodeResolve({ jsnext: true, main: true }),
+          commonjs()
+        ],
         onwarn: (e) => {
           console.log(e)
         }
@@ -79,7 +90,11 @@ class Session extends EventEmitter {
     }
     tasks.push(rollup({
       entry: __dirname + '/filter.es',
-      plugins: [babel()],
+      plugins: [
+        babel(),
+        nodeResolve({ jsnext: true, main: true }),
+        commonjs()
+      ],
       onwarn: (e) => {
         console.log(e)
       }

@@ -1,4 +1,5 @@
 import {Layer, Item, Value} from 'dripcap';
+import {Enum} from 'instant';
 
 export default class Dissector {
   analyze(packet, parentLayer) {
@@ -39,10 +40,7 @@ export default class Dissector {
         0x86DD: 'IPv6'
       };
 
-      let name = table[type] || 'Unknown';
-      let val = {};
-      val[name] = type;
-      let etherType = new Value(val, 'dripcap/enum');
+      let etherType = Enum(table, type);
       layer.addItem(new Item({
         name: 'EtherType',
         value: etherType,
