@@ -15,6 +15,8 @@ if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then
   curl -O https://dripcap.org/storage/libpcap-1.7.4.tar.gz
   tar xzf libpcap-1.7.4.tar.gz
   (cd libpcap-1.7.4 && ./configure -q --enable-shared=no && make -j2 && sudo make install)
+
+  sudo yarn global add node-gyp mocha
 fi
 
 if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then
@@ -22,9 +24,9 @@ if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then
   brew install jq
   curl -o- -L https://yarnpkg.com/install.sh | bash
   export PATH="$HOME/.yarn/bin:$PATH"
+  yarn global add node-gyp mocha
 fi
 
-yarn global add node-gyp mocha
 yarn
 npm install .
 
