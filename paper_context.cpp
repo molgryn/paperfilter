@@ -12,7 +12,8 @@
 
 using namespace v8;
 
-void PaperContext::init(v8::Isolate *isolate) {
+namespace {
+void initModule(v8pp::module *module, v8::Isolate *isolate) {
   v8pp::class_<Packet> Packet_class(isolate);
   Packet_class.set("seq", v8pp::property(&Packet::seq));
   Packet_class.set("ts_sec", v8pp::property(&Packet::ts_sec));
@@ -84,15 +85,19 @@ void PaperContext::init(v8::Isolate *isolate) {
   LargeBuffer_class.ctor<>();
   LargeBuffer_class.set("write", &LargeBuffer::write);
 
-  v8pp::module dripcap(isolate);
-  dripcap.set("Buffer", Buffer_class);
-  dripcap.set("Layer", Layer_class);
-  dripcap.set("Item", Item_class);
-  dripcap.set("Value", ItemValue_class);
-  dripcap.set("StreamChunk", StreamChunk_class);
-  dripcap.set("VirtualPacket", VirtualPacket_class);
-  dripcap.set("LargeBuffer", LargeBuffer_class);
+  module->set("Buffer", Buffer_class);
+  module->set("Layer", Layer_class);
+  module->set("Item", Item_class);
+  module->set("Value", ItemValue_class);
+  module->set("StreamChunk", StreamChunk_class);
+  module->set("VirtualPacket", VirtualPacket_class);
+  module->set("LargeBuffer", LargeBuffer_class);
+}
+}
 
+void PaperContext::init(v8::Isolate *isolate) {
+  v8pp::module dripcap(isolate);
+  initModule(&dripcap, isolate);
   Local<FunctionTemplate> require = FunctionTemplate::New(
       isolate, [](FunctionCallbackInfo<Value> const &args) {
         Isolate *isolate = Isolate::GetCurrent();
@@ -109,4 +114,11 @@ void PaperContext::init(v8::Isolate *isolate) {
 
   isolate->GetCurrentContext()->Global()->Set(
       v8::String::NewFromUtf8(isolate, "require"), require->GetFunction());
+}
+
+void PaperContext::init(v8::Local<v8::Object> exports) {
+  Isolate *isolate = Isolate::GetCurrent();
+  v8pp::module dripcap(isolate);
+  initModule(&dripcap, isolate);
+  exports->SetPrototype(dripcap.new_instance());
 }
