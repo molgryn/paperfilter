@@ -25,7 +25,13 @@ if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then
   mkdir ~/.electron
   curl -L -o ~/.electron/electron-v${ELECTRON_VERSION}-darwin-x64.zip https://github.com/electron/electron/releases/download/v${ELECTRON_VERSION}/electron-v${ELECTRON_VERSION}-darwin-x64.zip
   curl -L -o ~/.electron/SHASUMS256.txt-${ELECTRON_VERSION} https://github.com/electron/electron/releases/download/v${ELECTRON_VERSION}/SHASUMS256.txt
-  npm install --depth 0 electron@${ELECTRON_VERSION}
+
+  curl -o- -L https://yarnpkg.com/install.sh | bash
+  export PATH="$HOME/.yarn/bin:$PATH"
+
+  yarn install electron@${ELECTRON_VERSION}
+  yarn global add node-gyp mocha
+  yarn
 fi
 
 npm install --depth 0 -g node-gyp mocha
