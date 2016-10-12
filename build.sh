@@ -7,8 +7,9 @@ if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then
   sh -e /etc/init.d/xvfb start +extension RANDR;
   sleep 3
 
-  export ELECTRON_VERSION=`jq .devDependencies.electron package.json -r`
-  echo $ELECTRON_VERSION
+  sudo apt-key adv --keyserver pgp.mit.edu --recv D101F7899D41F3C3
+  echo "deb http://dl.yarnpkg.com/debian/ stable main" | sudo tee /etc/apt/sources.list.d/yarn.list
+  sudo apt-get update && sudo apt-get install yarn
 
   curl -O https://dripcap.org/storage/libpcap-1.7.4.tar.gz
   tar xzf libpcap-1.7.4.tar.gz
@@ -16,25 +17,13 @@ if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then
 fi
 
 if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then
-  brew update > /dev/null
-  brew install jq
-
-  export ELECTRON_VERSION=`jq .devDependencies.electron package.json -r`
-  echo $ELECTRON_VERSION
-
-  #mkdir ~/.electron
-  #curl -L -o ~/.electron/electron-v${ELECTRON_VERSION}-darwin-x64.zip https://github.com/electron/electron/releases/download/v${ELECTRON_VERSION}/electron-v${ELECTRON_VERSION}-darwin-x64.zip
-  #curl -L -o ~/.electron/SHASUMS256.txt-${ELECTRON_VERSION} https://github.com/electron/electron/releases/download/v${ELECTRON_VERSION}/SHASUMS256.txt
-
   curl -o- -L https://yarnpkg.com/install.sh | bash
   export PATH="$HOME/.yarn/bin:$PATH"
-
-  yarn global add node-gyp mocha
-  yarn
 fi
 
-npm install --depth 0 -g node-gyp mocha
-npm install --depth 0
+yarn global add node-gyp mocha
+yarn
+npm install .
 
 for i in {1..10}; do npm test; test $? -ne 0 && exit 1; done
 exit 0
