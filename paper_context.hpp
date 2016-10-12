@@ -6,7 +6,7 @@
 class PaperContext {
 public:
   static void init(v8::Isolate *isolate);
-  static void init(v8::Local<v8::Object> exports);
+  static void init(v8::Local<v8::Object> module);
 };
 
 #endif

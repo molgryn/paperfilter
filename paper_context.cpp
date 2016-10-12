@@ -116,9 +116,10 @@ void PaperContext::init(v8::Isolate *isolate) {
       v8::String::NewFromUtf8(isolate, "require"), require->GetFunction());
 }
 
-void PaperContext::init(v8::Local<v8::Object> exports) {
+void PaperContext::init(v8::Local<v8::Object> module) {
   Isolate *isolate = Isolate::GetCurrent();
   v8pp::module dripcap(isolate);
   initModule(&dripcap, isolate);
-  exports->SetPrototype(dripcap.new_instance());
+  module->Set(v8::String::NewFromUtf8(isolate, "exports"),
+              dripcap.new_instance());
 }

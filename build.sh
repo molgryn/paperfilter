@@ -22,14 +22,13 @@ if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then
   export ELECTRON_VERSION=`jq .devDependencies.electron package.json -r`
   echo $ELECTRON_VERSION
 
-  mkdir ~/.electron
-  curl -L -o ~/.electron/electron-v${ELECTRON_VERSION}-darwin-x64.zip https://github.com/electron/electron/releases/download/v${ELECTRON_VERSION}/electron-v${ELECTRON_VERSION}-darwin-x64.zip
-  curl -L -o ~/.electron/SHASUMS256.txt-${ELECTRON_VERSION} https://github.com/electron/electron/releases/download/v${ELECTRON_VERSION}/SHASUMS256.txt
+  #mkdir ~/.electron
+  #curl -L -o ~/.electron/electron-v${ELECTRON_VERSION}-darwin-x64.zip https://github.com/electron/electron/releases/download/v${ELECTRON_VERSION}/electron-v${ELECTRON_VERSION}-darwin-x64.zip
+  #curl -L -o ~/.electron/SHASUMS256.txt-${ELECTRON_VERSION} https://github.com/electron/electron/releases/download/v${ELECTRON_VERSION}/SHASUMS256.txt
 
   curl -o- -L https://yarnpkg.com/install.sh | bash
   export PATH="$HOME/.yarn/bin:$PATH"
 
-  yarn install electron@${ELECTRON_VERSION}
   yarn global add node-gyp mocha
   yarn
 fi
