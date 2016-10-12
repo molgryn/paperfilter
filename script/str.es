@@ -5,7 +5,6 @@ export default class Dissector {
     this.basePackets = [];
   }
   analyze(packet, parentLayer, chunk) {
-    throw 5;
     this.basePackets.push(packet.seq);
     if (this.basePackets.length > 3) {
       let vp = new VirtualPacket('::Ethernet::TCP::HTTP');

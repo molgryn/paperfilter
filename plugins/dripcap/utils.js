@@ -7,6 +7,12 @@ export function Enum(table, value) {
   return new Value(val, 'dripcap/enum');
 }
 
-export default function () {
-    throw 0;
+export function Flags(table, value) {
+  let val = {};
+  for (let name in table) {
+    val[name] = !!(table[name] & value);
+  }
+  return new Value(val, 'dripcap/flags');
 }
+
+export default function () {}
