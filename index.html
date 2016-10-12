@@ -25,6 +25,12 @@
               '::Ethernet::<IPv4>'
             ],
             script: __dirname + '/script/ipv4.es'
+          },
+          {
+            namespaces: [
+              /::Ethernet::\w+::<TCP>/
+            ],
+            script: __dirname + '/script/tcp.es'
           }
         ],
         stream_dissectors: [
