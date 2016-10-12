@@ -53,7 +53,6 @@ class Session extends EventEmitter {
         const result = bundle.generate({
           format: 'cjs'
         });
-        console.log(result.code)
         return result.code;
       }).then((code) => {
         sessOption.dissectors.push({

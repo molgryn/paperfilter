@@ -1,5 +1,5 @@
 import {Layer, Item, Value} from 'dripcap';
-import {Enum} from 'instant';
+import {Enum} from 'dripcap/utils';
 
 export default class Dissector {
   analyze(packet, parentLayer) {
