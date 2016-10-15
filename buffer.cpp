@@ -225,7 +225,8 @@ void Buffer::toString(const v8::FunctionCallbackInfo<v8::Value> &args) const {
     std::stringstream stream;
     for (size_t i = 0; i < length(); ++i) {
       stream << std::hex << std::setfill('0') << std::setw(2)
-             << static_cast<int>(reinterpret_cast<const uint8_t &>(*data(i)));
+             << static_cast<uint32_t>(
+                    *reinterpret_cast<const uint8_t *>(data(i)));
     }
     args.GetReturnValue().Set(v8pp::to_v8(isolate, stream.str()));
   } else {
@@ -236,12 +237,12 @@ void Buffer::toString(const v8::FunctionCallbackInfo<v8::Value> &args) const {
 
 std::string Buffer::valueOf() const {
   size_t tail = std::min(static_cast<size_t>(16), length());
-  std::string str("<Buffer ");
+  std::string str("<Buffer");
   std::stringstream stream;
   for (size_t i = 0; i < tail; ++i) {
-    stream << std::hex << std::setfill('0') << std::setw(2)
-           << static_cast<int>(reinterpret_cast<const uint8_t &>(*data(i)))
-           << " ";
+    stream << " " << std::hex << std::setfill('0') << std::setw(2)
+           << static_cast<uint32_t>(
+                  *reinterpret_cast<const uint8_t *>(data(i)));
   }
   str += stream.str();
   if (length() > 16)
