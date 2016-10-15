@@ -48,7 +48,7 @@ export default class Dissector {
       });
       layer.setAttr('etherType', etherType);
 
-      if (table[type] != null) {
+      if (type in table) {
         layer.namespace = `::Ethernet::<${table[type]}>`;
       }
     }
