@@ -8,43 +8,43 @@ export default class Dissector {
     layer.alias = 'ipv4';
 
     let version = new Value(parentLayer.payload.readUInt8(0, true) >> 4);
-    layer.addItem(new Item({
+    layer.addItem({
       name: 'Version',
       value: version,
       range: '0:1'
-    }));
+    });
     layer.setAttr('version', version);
 
     let headerLength = new Value(parentLayer.payload.readUInt8(0, true) & 0b00001111);
-    layer.addItem(new Item({
+    layer.addItem({
       name: 'Internet Header Length',
       value: headerLength,
       range: '0:1'
-    }));
+    });
     layer.setAttr('headerLength', headerLength);
 
     let type = new Value(parentLayer.payload.readUInt8(1, true));
-    layer.addItem(new Item({
+    layer.addItem({
       name: 'Type of service',
       value: type,
       range: '1:2'
-    }));
+    });
     layer.setAttr('type', type);
 
     let totalLength = new Value(parentLayer.payload.readUInt16BE(2, true));
-    layer.addItem(new Item({
+    layer.addItem({
       name: 'Total Length',
       value: totalLength,
       range: '2:4'
-    }));
+    });
     layer.setAttr('totalLength', totalLength);
 
     let id = new Value(parentLayer.payload.readUInt16BE(4, true));
-    layer.addItem(new Item({
+    layer.addItem({
       name: 'Identification',
       value: id,
       range: '4:6'
-    }));
+    });
     layer.setAttr('id', id);
 
     let table = {
@@ -55,28 +55,28 @@ export default class Dissector {
 
     let flags = Flags(table, (parentLayer.payload.readUInt8(6, true) >> 5) & 0x7);
 
-    layer.addItem(new Item({
+    layer.addItem({
       name: 'Flags',
       value: flags,
       range: '6:7',
       children: [
-        new Item({
+        {
           name: 'Reserved',
           value: new Value(flags.data['Reserved']),
           range: '6:7'
-        }),
-        new Item({
+        },
+        {
           name: 'Don\'t Fragment',
           value: new Value(flags.data['Don\'t Fragment']),
           range: '6:7'
-        }),
-        new Item({
+        },
+        {
           name: 'More Fragments',
           value: new Value(flags.data['More Fragments']),
           range: '6:7'
-        })
+        }
       ]
-    }));
+    });
 
     layer.namespace = '::Ethernet::IPv4::<TCP>';
     return [layer];

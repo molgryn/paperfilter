@@ -12,6 +12,7 @@ class Item {
 public:
   Item();
   Item(const v8::FunctionCallbackInfo<v8::Value> &args);
+  Item(v8::Local<v8::Value> value);
   Item(const Item &item);
   ~Item();
 

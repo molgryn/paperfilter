@@ -74,6 +74,8 @@ void Layer::addItem(v8::Local<v8::Object> obj) {
   Isolate *isolate = Isolate::GetCurrent();
   if (Item *item = v8pp::class_<Item>::unwrap_object(isolate, obj)) {
     d->items.emplace_back(*item);
+  } else if (obj->IsObject()) {
+    d->items.emplace_back(obj);
   }
 }
 

@@ -17,10 +17,12 @@ public:
 
 Item::Item() : d(new Private()) {}
 
-Item::Item(const v8::FunctionCallbackInfo<v8::Value> &args) : d(new Private()) {
+Item::Item(const v8::FunctionCallbackInfo<v8::Value> &args) : Item(args[0]) {}
+
+Item::Item(v8::Local<v8::Value> value) : d(new Private()) {
   Isolate *isolate = Isolate::GetCurrent();
-  if (!args[0].IsEmpty() && args[0]->IsObject()) {
-    v8::Local<v8::Object> obj = args[0].As<v8::Object>();
+  if (!value.IsEmpty() && value->IsObject()) {
+    v8::Local<v8::Object> obj = value.As<v8::Object>();
     v8pp::get_option(isolate, obj, "name", d->name);
     v8pp::get_option(isolate, obj, "range", d->range);
 
@@ -73,6 +75,8 @@ void Item::addChild(v8::Local<v8::Object> obj) {
   Isolate *isolate = Isolate::GetCurrent();
   if (Item *item = v8pp::class_<Item>::unwrap_object(isolate, obj)) {
     d->children.emplace_back(*item);
+  } else if (obj->IsObject()) {
+    d->children.emplace_back(obj);
   }
 }
 
