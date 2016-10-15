@@ -1,8 +1,8 @@
 #ifndef SESSION_LAYER_WRAPPER_HPP
 #define SESSION_LAYER_WRAPPER_HPP
 
-#include "layer.hpp"
 #include "buffer.hpp"
+#include "layer.hpp"
 #include "session_item_wrapper.hpp"
 #include <nan.h>
 #include <node_buffer.h>

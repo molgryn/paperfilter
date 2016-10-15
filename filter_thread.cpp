@@ -1,14 +1,14 @@
 #include "filter_thread.hpp"
+#include "error.hpp"
 #include "packet.hpp"
 #include "packet_store.hpp"
 #include "paper_context.hpp"
-#include "error.hpp"
 #include <cstdlib>
 #include <nan.h>
 #include <thread>
 #include <v8pp/class.hpp>
-#include <v8pp/object.hpp>
 #include <v8pp/json.hpp>
+#include <v8pp/object.hpp>
 
 namespace {
 class ArrayBufferAllocator : public v8::ArrayBuffer::Allocator {

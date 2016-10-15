@@ -5,4 +5,9 @@ export function IPv4Address(buffer) {
   return new Value(val, 'dripcap/ipv4/addr');
 }
 
+export function IPv4Host(addr, port) {
+  let val = `${addr}:${port}`
+  return new Value(val, 'dripcap/ipv4/host');
+}
+
 export default function () {}

@@ -1,10 +1,10 @@
 #include "stream_dissector_thread.hpp"
+#include "error.hpp"
 #include "layer.hpp"
 #include "packet.hpp"
 #include "paper_context.hpp"
 #include "stream_chunk.hpp"
 #include "virtual_packet.hpp"
-#include "error.hpp"
 #include <condition_variable>
 #include <cstdlib>
 #include <mutex>
@@ -104,8 +104,9 @@ StreamDissectorThread::Private::Private(const std::shared_ptr<Context> &ctx)
         }
       }
 
-      std::unordered_map<
-          std::string, std::vector<v8::UniquePersistent<v8::Object>>> instances;
+      std::unordered_map<std::string,
+                         std::vector<v8::UniquePersistent<v8::Object>>>
+          instances;
 
       while (true) {
         std::unique_lock<std::mutex> lock(mutex);

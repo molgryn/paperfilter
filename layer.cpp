@@ -1,6 +1,6 @@
 #include "layer.hpp"
-#include "item.hpp"
 #include "buffer.hpp"
+#include "item.hpp"
 #include <v8pp/class.hpp>
 
 using namespace v8;

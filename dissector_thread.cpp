@@ -1,10 +1,10 @@
 #include "dissector_thread.hpp"
+#include "error.hpp"
 #include "layer.hpp"
 #include "packet.hpp"
 #include "packet_queue.hpp"
 #include "paper_context.hpp"
 #include "stream_chunk.hpp"
-#include "error.hpp"
 #include <cstdlib>
 #include <nan.h>
 #include <thread>

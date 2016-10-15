@@ -171,9 +171,7 @@ void Pcap::start() {
   if (d->bpf.bf_len > 0 && pcap_setfilter(d->pcap, &d->bpf) < 0) {
     if (d->ctx->errorCb) {
       json11::Json error = json11::Json::object {
-        {
-          "message", "pcap_setfilter() failed", { "domain", "pcap" }
-        };
+        {"message", "pcap_setfilter() failed", {"domain", "pcap"}};
         d->ctx->errorCb(error.dump());
       }
       pcap_close(d->pcap);
