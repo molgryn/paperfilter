@@ -140,8 +140,7 @@ void Buffer::readInt8(const v8::FunctionCallbackInfo<v8::Value> &args) const {
   if (!noassert && offset + sizeof(int8_t) > length()) {
     args.GetReturnValue().Set(v8pp::throw_ex(isolate, "index out of range"));
   } else {
-    args.GetReturnValue().Set(v8pp::to_v8(
-        isolate, Number::New(isolate, static_cast<int>(*data(offset)))));
+    args.GetReturnValue().Set(data(offset)[0]);
   }
 }
 
@@ -153,9 +152,9 @@ void Buffer::readInt16BE(
   if (!noassert && offset + sizeof(int16_t) > length()) {
     args.GetReturnValue().Set(v8pp::throw_ex(isolate, "index out of range"));
   } else {
-    const char buf[2] = {*data(0 + offset), *data(1 + offset)};
-    int16_t num = (buf[0] << 8) | (buf[1] << 0);
-    args.GetReturnValue().Set(v8pp::to_v8(isolate, Number::New(isolate, num)));
+    const char buf[2] = {data(offset)[1], data(offset)[0]};
+    int16_t num = *reinterpret_cast<const int16_t *>(buf);
+    args.GetReturnValue().Set(num);
   }
 }
 
@@ -167,11 +166,10 @@ void Buffer::readInt32BE(
   if (!noassert && offset + sizeof(int32_t) > length()) {
     args.GetReturnValue().Set(v8pp::throw_ex(isolate, "index out of range"));
   } else {
-    const char buf[4] = {*data(0 + offset), *data(1 + offset),
-                         *data(2 + offset), *data(3 + offset)};
-    int32_t num =
-        (buf[0] << 24) | (buf[1] << 16) | (buf[2] << 8) | (buf[3] << 0);
-    args.GetReturnValue().Set(v8pp::to_v8(isolate, Number::New(isolate, num)));
+    const char buf[4] = {data(offset)[3], data(offset)[2], data(offset)[1],
+                         data(offset)[0]};
+    int32_t num = *reinterpret_cast<const int32_t *>(buf);
+    args.GetReturnValue().Set(num);
   }
 }
 
@@ -182,8 +180,7 @@ void Buffer::readUInt8(const v8::FunctionCallbackInfo<v8::Value> &args) const {
   if (!noassert && offset + sizeof(uint8_t) > length()) {
     args.GetReturnValue().Set(v8pp::throw_ex(isolate, "index out of range"));
   } else {
-    args.GetReturnValue().Set(v8pp::to_v8(
-        isolate, Number::New(isolate, static_cast<int>(*data(offset)))));
+    args.GetReturnValue().Set(*reinterpret_cast<const uint8_t *>(data(offset)));
   }
 }
 
@@ -195,9 +192,9 @@ void Buffer::readUInt16BE(
   if (!noassert && offset + sizeof(uint16_t) > length()) {
     args.GetReturnValue().Set(v8pp::throw_ex(isolate, "index out of range"));
   } else {
-    const char buf[2] = {*data(0 + offset), *data(1 + offset)};
-    uint16_t num = (buf[0] << 8) | (buf[1] << 0);
-    args.GetReturnValue().Set(v8pp::to_v8(isolate, Number::New(isolate, num)));
+    const char buf[2] = {data(offset)[1], data(offset)[0]};
+    uint16_t num = *reinterpret_cast<const uint16_t *>(buf);
+    args.GetReturnValue().Set(num);
   }
 }
 
@@ -209,11 +206,10 @@ void Buffer::readUInt32BE(
   if (!noassert && offset + sizeof(uint32_t) > length()) {
     args.GetReturnValue().Set(v8pp::throw_ex(isolate, "index out of range"));
   } else {
-    const char buf[4] = {*data(0 + offset), *data(1 + offset),
-                         *data(2 + offset), *data(3 + offset)};
-    uint32_t num =
-        (buf[0] << 24) | (buf[1] << 16) | (buf[2] << 8) | (buf[3] << 0);
-    args.GetReturnValue().Set(v8pp::to_v8(isolate, Number::New(isolate, num)));
+    const char buf[4] = {data(offset)[3], data(offset)[2], data(offset)[1],
+                         data(offset)[0]};
+    uint32_t num = *reinterpret_cast<const uint32_t *>(buf);
+    args.GetReturnValue().Set(num);
   }
 }
 
