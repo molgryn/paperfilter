@@ -25,6 +25,8 @@ public:
   void readUInt16BE(const v8::FunctionCallbackInfo<v8::Value> &args) const;
   void readUInt32BE(const v8::FunctionCallbackInfo<v8::Value> &args) const;
 
+  void get(uint32_t index,
+           const v8::PropertyCallbackInfo<v8::Value> &info) const;
   void sliceBuffer(const v8::FunctionCallbackInfo<v8::Value> &args) const;
   void toString(const v8::FunctionCallbackInfo<v8::Value> &args) const;
   void indexOf(const v8::FunctionCallbackInfo<v8::Value> &args) const;

@@ -44,6 +44,17 @@ void initModule(v8pp::module *module, v8::Isolate *isolate) {
   Buffer_class.set("readUInt16BE", &Buffer::readUInt16BE);
   Buffer_class.set("readUInt32BE", &Buffer::readUInt32BE);
 
+  Buffer_class.class_function_template()
+      ->PrototypeTemplate()
+      ->SetIndexedPropertyHandler(
+          [](uint32_t index, const PropertyCallbackInfo<Value> &info) {
+            Buffer *buffer = v8pp::class_<Buffer>::unwrap_object(
+                Isolate::GetCurrent(), info.This());
+            if (buffer) {
+              buffer->get(index, info);
+            }
+          });
+
   v8pp::class_<Layer> Layer_class(isolate);
   Layer_class.ctor<const std::string &>();
   Layer_class.set("namespace", v8pp::property(&Layer::ns, &Layer::setNs));

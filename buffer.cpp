@@ -229,7 +229,7 @@ void Buffer::toString(const v8::FunctionCallbackInfo<v8::Value> &args) const {
     std::stringstream stream;
     for (size_t i = 0; i < length(); ++i) {
       stream << std::hex << std::setfill('0') << std::setw(2)
-             << static_cast<int>(*data(i));
+             << static_cast<int>(reinterpret_cast<const uint8_t &>(*data(i)));
     }
     args.GetReturnValue().Set(v8pp::to_v8(isolate, stream.str()));
   } else {
@@ -244,7 +244,8 @@ std::string Buffer::valueOf() const {
   std::stringstream stream;
   for (size_t i = 0; i < tail; ++i) {
     stream << std::hex << std::setfill('0') << std::setw(2)
-           << static_cast<int>(*data(i)) << " ";
+           << static_cast<int>(reinterpret_cast<const uint8_t &>(*data(i)))
+           << " ";
   }
   str += stream.str();
   if (length() > 16)
@@ -259,6 +260,16 @@ void Buffer::indexOf(const v8::FunctionCallbackInfo<v8::Value> &args) const {
         search(data(), length(), buffer->data(), buffer->length()));
   } else {
     args.GetReturnValue().Set(1);
+  }
+}
+
+void Buffer::get(uint32_t index,
+                 const v8::PropertyCallbackInfo<v8::Value> &info) const {
+  Isolate *isolate = Isolate::GetCurrent();
+  if (index >= length()) {
+    info.GetReturnValue().Set(v8pp::throw_ex(isolate, "index out of range"));
+  } else {
+    info.GetReturnValue().Set(static_cast<uint8_t>(*data(index)));
   }
 }
 

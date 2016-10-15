@@ -1,5 +1,6 @@
 import {Layer, Item, Value} from 'dripcap';
 import {Flags, Enum} from 'dripcap/utils';
+import {IPv4Address} from 'dripcap/ipv4';
 
 export default class Dissector {
   analyze(packet, parentLayer) {
@@ -103,8 +104,9 @@ export default class Dissector {
     });
     layer.setAttr('protocol', protocol);
 
-    if (protocolNumber in protocolTable) {
-      layer.namespace = `::Ethernet::IPv4::<${protocolTable[protocolNumber]}>`;
+    let protocolName = protocolTable[protocolNumber]
+    if (protocolName != null) {
+      layer.namespace = `::Ethernet::IPv4::<${protocolName}>`;
     }
 
     let checksum = new Value(parentLayer.payload.readUInt16BE(10));
@@ -115,12 +117,33 @@ export default class Dissector {
     });
     layer.setAttr('checksum', checksum);
 
+    let source = IPv4Address(parentLayer.payload.slice(12, 16));
+    layer.addItem({
+      name: 'Source IP Address',
+      value: source,
+      range: '12:16',
+    });
+    layer.setAttr('src', source);
+
+    let destination = IPv4Address(parentLayer.payload.slice(16, 20));
+    layer.addItem({
+      name: 'Destination IP Address',
+      value: destination,
+      range: '16:20',
+    });
+    layer.setAttr('dst', destination);
+
     layer.payload = parentLayer.payload.slice(20, totalLength.data);
     layer.addItem({
       name: 'Payload',
       value: new Value(layer.payload),
       range: '20:' + totalLength.data
     });
+
+    layer.summary = `${source.data} -> ${destination.data}`;
+    if (protocolName != null) {
+      layer.summary = `[${protocolName}] ` + layer.summary;
+    }
 
     return [layer];
   }
