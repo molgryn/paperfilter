@@ -62,6 +62,10 @@ StreamDissectorThread::Private::Private(const std::shared_ptr<Context> &ctx)
     v8::Isolate::CreateParams create_params;
     create_params.array_buffer_allocator = new ArrayBufferAllocator();
     v8::Isolate *isolate = v8::Isolate::New(create_params);
+    
+    // workaround for chromium task runner
+    char dummyData[256] = {0};
+    isolate->SetData(0, dummyData);
 
     {
       v8::Isolate::Scope isolate_scope(isolate);

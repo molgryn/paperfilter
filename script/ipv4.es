@@ -52,10 +52,9 @@ export default class Dissector {
       'Don\'t Fragment': 0x2,
       'More Fragments': 0x4,
     };
-    for (let i = 0; i < 100; ++i) {
-      let flags = Flags(table, (parentLayer.payload.readUInt8(6, true) >> 5) & 0x7);
-    }
-/*
+
+    let flags = Flags(table, (parentLayer.payload.readUInt8(6, true) >> 5) & 0x7);
+
     layer.addItem(new Item({
       name: 'Flags',
       value: flags,
@@ -78,7 +77,7 @@ export default class Dissector {
         })
       ]
     }));
-*/
+
     layer.namespace = '::Ethernet::IPv4::<TCP>';
     return [layer];
   }
