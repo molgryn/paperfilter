@@ -46,7 +46,7 @@ FilterThread::Private::Private(const std::shared_ptr<Context> &ctx) : ctx(ctx) {
     v8::Isolate *isolate = v8::Isolate::New(create_params);
 
     // workaround for chromium task runner
-    char dummyData[16] = {0};
+    char dummyData[32] = {0};
     isolate->SetData(0, dummyData);
 
     {
