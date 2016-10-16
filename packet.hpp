@@ -8,14 +8,13 @@
 #include <vector>
 
 class Layer;
-class VirtualPacket;
 class Buffer;
 struct pcap_pkthdr;
 
 class Packet {
 public:
   Packet(v8::Local<v8::Object> option);
-  Packet(const VirtualPacket &vp);
+  Packet(std::unique_ptr<Layer> layer);
   Packet(const struct pcap_pkthdr *h, const uint8_t *bytes);
   ~Packet();
   Packet(const Packet &) = delete;

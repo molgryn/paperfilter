@@ -7,7 +7,7 @@
 #include <vector>
 
 class StreamChunk;
-class VirtualPacket;
+class Layer;
 
 class StreamDispatcher {
 public:
@@ -15,7 +15,7 @@ public:
     std::vector<Dissector> dissectors;
     std::function<void(std::string)> errorCb;
     std::function<void(std::vector<std::unique_ptr<StreamChunk>>)> streamsCb;
-    std::function<void(std::vector<std::unique_ptr<VirtualPacket>>)> vpacketsCb;
+    std::function<void(std::vector<std::unique_ptr<Layer>>)> vpLayersCb;
   };
 
 public:

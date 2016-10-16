@@ -149,7 +149,7 @@ StreamDissectorThread::Private::Private(const std::shared_ptr<Context> &ctx)
             v8pp::class_<StreamChunk>::import_external(isolate,
                                                        new StreamChunk(*chunk));
 
-        std::vector<std::unique_ptr<VirtualPacket>> vpackets;
+        std::vector<std::unique_ptr<Layer>> vpLayers;
         std::vector<std::unique_ptr<StreamChunk>> streams;
 
         for (const auto &unique : objs) {
@@ -169,11 +169,10 @@ StreamDissectorThread::Private::Private(const std::shared_ptr<Context> &ctx)
             } else if (result->IsArray()) {
               v8::Local<v8::Array> array = result.As<v8::Array>();
               for (uint32_t i = 0; i < array->Length(); ++i) {
-                if (VirtualPacket *vp =
-                        v8pp::class_<VirtualPacket>::unwrap_object(
-                            isolate, array->Get(i))) {
-                  vpackets.push_back(
-                      std::unique_ptr<VirtualPacket>(new VirtualPacket(*vp)));
+                if (Layer *vpLayer = v8pp::class_<Layer>::unwrap_object(
+                        isolate, array->Get(i))) {
+                  vpLayers.push_back(
+                      std::unique_ptr<Layer>(new Layer(*vpLayer)));
                 } else if (StreamChunk *stream =
                                v8pp::class_<StreamChunk>::unwrap_object(
                                    isolate, array->Get(i))) {
@@ -186,11 +185,9 @@ StreamDissectorThread::Private::Private(const std::shared_ptr<Context> &ctx)
                   streams.push_back(std::move(newChunk));
                 }
               }
-            } else if (VirtualPacket *vp =
-                           v8pp::class_<VirtualPacket>::unwrap_object(isolate,
-                                                                      result)) {
-              vpackets.push_back(
-                  std::unique_ptr<VirtualPacket>(new VirtualPacket(*vp)));
+            } else if (Layer *vpLayer = v8pp::class_<Layer>::unwrap_object(
+                           isolate, result)) {
+              vpLayers.push_back(std::unique_ptr<Layer>(new Layer(*vpLayer)));
             } else if (StreamChunk *stream =
                            v8pp::class_<StreamChunk>::unwrap_object(isolate,
                                                                     result)) {
@@ -208,8 +205,8 @@ StreamDissectorThread::Private::Private(const std::shared_ptr<Context> &ctx)
         v8pp::class_<Packet>::unreference_external(isolate, packet.get());
         v8pp::class_<Layer>::unreference_external(isolate, layer.get());
 
-        if (ctx.vpacketsCb)
-          ctx.vpacketsCb(std::move(vpackets));
+        if (ctx.vpLayersCb)
+          ctx.vpLayersCb(std::move(vpLayers));
 
         if (ctx.streamsCb)
           ctx.streamsCb(std::move(streams));

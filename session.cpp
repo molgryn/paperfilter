@@ -179,12 +179,11 @@ Session::Session(v8::Local<v8::Value> option) : d(new Private()) {
       [this](std::vector<std::unique_ptr<StreamChunk>> streams) {
         d->streamDispatcher->insert(std::move(streams));
       };
-  streamCtx->vpacketsCb =
-      [this](std::vector<std::unique_ptr<VirtualPacket>> vpackets) {
-        for (auto &vp : vpackets) {
-          d->queue.push(std::unique_ptr<Packet>(new Packet(*vp)));
-        }
-      };
+  streamCtx->vpLayersCb = [this](std::vector<std::unique_ptr<Layer>> layers) {
+    for (auto &layer : layers) {
+      d->queue.push(std::unique_ptr<Packet>(new Packet(std::move(layer))));
+    }
+  };
   d->streamDispatcher.reset(new StreamDispatcher(streamCtx));
 
   auto pcapCtx = std::make_shared<Pcap::Context>();

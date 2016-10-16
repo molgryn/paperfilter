@@ -252,6 +252,8 @@ export default class Dissector {
     let id = layer.attr('src').data + '/' + layer.attr('dst').data;
     let chunk = new StreamChunk(parentLayer.namespace, id, layer);
     chunk.setAttr('payload', new Value(layer.payload));
+    chunk.setAttr('seq', seq);
+    
     if (flags.data['FIN'] && flags.data['ACK']) {
       chunk.end = true;
     }

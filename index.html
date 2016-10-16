@@ -39,6 +39,12 @@
               /::Ethernet::\w+::<TCP>/
             ],
             script: __dirname + '/script/tcp_stream.es'
+          },
+          {
+            namespaces: [
+              /::Ethernet::\w+::TCP/
+            ],
+            script: __dirname + '/script/http_stream.es'
           }
         ]
       };

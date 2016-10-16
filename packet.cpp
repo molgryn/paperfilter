@@ -48,11 +48,11 @@ Packet::Packet(v8::Local<v8::Object> option) : d(new Private()) {
   }
 }
 
-Packet::Packet(const VirtualPacket &vp) : d(new Private()) {
-  d->payload = vp.payload();
+Packet::Packet(std::unique_ptr<Layer> layer) : d(new Private()) {
+  d->payload = layer->payload()->slice();
   d->payload->freeze();
   d->length = 0;
-  addLayer(std::make_shared<Layer>(vp.ns()));
+  addLayer(std::make_shared<Layer>(*layer));
 }
 
 Packet::Packet(const struct pcap_pkthdr *h, const uint8_t *bytes)

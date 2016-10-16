@@ -1,4 +1,4 @@
-const {Layer, StreamChunk} = require('dripcap');
+const {Layer, Value, StreamChunk} = require('dripcap');
 
 export default class Dissector {
   constructor() {
@@ -10,23 +10,23 @@ export default class Dissector {
     if (parentLayer.payload.length > 0) {
       let ns = chunk.namespace.replace('<TCP>', 'TCP');
       let stream = new StreamChunk(ns, chunk.id, parentLayer);
+      let payload = chunk.attr('payload').data;
+      let seq = chunk.attr('seq').data;
 
-      /*
       if (this.seq < 0) {
-        this.length += layer.payload.length;
-        stream.data = layer.payload;
+        this.length += payload.length;
+        stream.setAttr('payload', new Value(payload));
       } else {
         let start = this.seq + this.length;
-        let length = layer.payload.length;
-        if (start > layer.attrs.seq) {
-          length -= (start - layer.attrs.seq);
+        let length = payload.length;
+        if (start > seq) {
+          length -= (start - seq);
         }
         this.length += length;
-        stream.data = layer.payload;
+        stream.setAttr('payload', new Value(payload));
       }
-      this.seq = layer.attrs.seq;
-      output.push(stream);
-      */
+      this.seq = seq;
+      return [stream];
     }
 
   }
