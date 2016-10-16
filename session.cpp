@@ -11,7 +11,6 @@
 #include "permission.hpp"
 #include "stream_chunk.hpp"
 #include "stream_dispatcher.hpp"
-#include "virtual_packet.hpp"
 #include <nan.h>
 #include <unordered_set>
 #include <uv.h>

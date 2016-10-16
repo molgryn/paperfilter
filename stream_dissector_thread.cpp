@@ -4,7 +4,6 @@
 #include "packet.hpp"
 #include "paper_context.hpp"
 #include "stream_chunk.hpp"
-#include "virtual_packet.hpp"
 #include <condition_variable>
 #include <cstdlib>
 #include <mutex>

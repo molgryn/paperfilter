@@ -1,7 +1,6 @@
 #include "packet.hpp"
 #include "buffer.hpp"
 #include "layer.hpp"
-#include "virtual_packet.hpp"
 #include <chrono>
 #include <ctime>
 #include <node_buffer.h>

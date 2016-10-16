@@ -6,7 +6,6 @@
 #include "layer.hpp"
 #include "packet.hpp"
 #include "stream_chunk.hpp"
-#include "virtual_packet.hpp"
 #include <v8pp/class.hpp>
 #include <v8pp/module.hpp>
 
@@ -21,12 +20,6 @@ void initModule(v8pp::module *module, v8::Isolate *isolate) {
   Packet_class.set("length", v8pp::property(&Packet::length));
   Packet_class.set("payload", v8pp::property(&Packet::payloadBuffer));
   Packet_class.set("layers", v8pp::property(&Packet::layersObject));
-
-  v8pp::class_<VirtualPacket> VirtualPacket_class(isolate);
-  VirtualPacket_class.ctor<const std::string &>();
-  VirtualPacket_class.set("payload",
-                          v8pp::property(&VirtualPacket::payloadBuffer,
-                                         &VirtualPacket::setPayloadBuffer));
 
   v8pp::class_<Buffer> Buffer_class(isolate);
   Buffer_class.ctor<const v8::FunctionCallbackInfo<v8::Value> &>();
@@ -104,7 +97,6 @@ void initModule(v8pp::module *module, v8::Isolate *isolate) {
   module->set("Item", Item_class);
   module->set("Value", ItemValue_class);
   module->set("StreamChunk", StreamChunk_class);
-  module->set("VirtualPacket", VirtualPacket_class);
   module->set("LargeBuffer", LargeBuffer_class);
 }
 }

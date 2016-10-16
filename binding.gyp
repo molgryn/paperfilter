@@ -15,7 +15,6 @@
             "item_value.cpp",
             "session.cpp",
             "packet.cpp",
-            "virtual_packet.cpp",
             "packet_store.cpp",
             "stream_chunk.cpp",
             "packet_queue.cpp",
