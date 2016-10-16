@@ -36,7 +36,7 @@ StreamDispatcher::Private::Private(const std::shared_ptr<Context> &ctx)
   dissCtx->streamsCb = ctx->streamsCb;
   dissCtx->errorCb = ctx->errorCb;
   dissCtx->dissectors = ctx->dissectors;
-  for (int i = 0; i < 4; ++i) {
+  for (int i = 0; i < ctx->threads; ++i) {
     dissectorThreads.emplace_back(new StreamDissectorThread(dissCtx));
   }
 }

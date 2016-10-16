@@ -12,6 +12,7 @@ class Layer;
 class StreamDispatcher {
 public:
   struct Context {
+    int threads;
     std::vector<Dissector> dissectors;
     std::function<void(std::string)> errorCb;
     std::function<void(std::vector<std::unique_ptr<StreamChunk>>)> streamsCb;

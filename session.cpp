@@ -12,6 +12,7 @@
 #include "stream_chunk.hpp"
 #include "stream_dispatcher.hpp"
 #include <nan.h>
+#include <thread>
 #include <unordered_set>
 #include <uv.h>
 #include <v8pp/class.hpp>
@@ -50,6 +51,8 @@ public:
 
   std::mutex errorMutex;
   std::unordered_set<std::string> recentErrors;
+
+  int threads;
 };
 
 Session::Private::Private() {
@@ -130,6 +133,10 @@ Session::Session(v8::Local<v8::Value> option) : d(new Private()) {
   v8pp::get_option(isolate, opt, "namespace", d->ns);
   v8pp::get_option(isolate, opt, "filterScript", d->filterScript);
 
+  d->threads = std::thread::hardware_concurrency();
+  v8pp::get_option(isolate, opt, "threads", d->threads);
+  d->threads = std::max(1, d->threads - 1);
+
   Local<Array> dissectorArray;
   std::vector<Dissector> dissectors;
   if (v8pp::get_option(isolate, opt, "dissectors", dissectorArray)) {
@@ -166,11 +173,12 @@ Session::Session(v8::Local<v8::Value> option) : d(new Private()) {
   dissCtx->errorCb =
       std::bind(&Private::error, std::ref(d), std::placeholders::_1);
 
-  for (int i = 0; i < 4; ++i) {
+  for (int i = 0; i < d->threads; ++i) {
     d->dissectorThreads.emplace_back(new DissectorThread(dissCtx));
   }
 
   auto streamCtx = std::make_shared<StreamDispatcher::Context>();
+  streamCtx->threads = d->threads;
   streamCtx->dissectors.swap(streamDissectors);
   streamCtx->errorCb =
       std::bind(&Private::error, std::ref(d), std::placeholders::_1);
@@ -218,7 +226,7 @@ void Session::filter(const std::string &name, const std::string &filter) {
     };
     context.ctx->errorCb =
         std::bind(&Private::error, std::ref(d), std::placeholders::_1);
-    for (int i = 0; i < 4; ++i) {
+    for (int i = 0; i < d->threads; ++i) {
       context.threads.emplace_back(new FilterThread(context.ctx));
     }
   }
