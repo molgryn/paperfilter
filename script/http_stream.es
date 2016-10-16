@@ -14,9 +14,35 @@ export default class Dissector {
       layer.name = 'HTTP';
       layer.alias = 'http';
       layer.payload = payload;
-      layer.setAttr('method', new Value(m[1]));
-      layer.setAttr('path', new Value(m[2]));
-      layer.setAttr('version', new Value(m[3]));
+
+      let method = new Value(m[1]);
+      let cursor = method.data.length;
+
+      layer.addItem({
+        name: 'Method',
+        value: method,
+        range: '0:' + cursor
+      });
+      layer.setAttr('method', method);
+
+      let path = new Value(m[2]);
+      cursor++;
+      layer.addItem({
+        name: 'Path',
+        value: path,
+        range: cursor + ':' + (cursor + path.data.length)
+      });
+      layer.setAttr('path', path);
+
+      let version = new Value(m[3]);
+      cursor += path.data.length + 1;
+      layer.addItem({
+        name: 'Version',
+        value: version,
+        range: cursor + ':' + (cursor + version.data.length)
+      });
+
+      layer.setAttr('version', version);
       layer.setAttr('src', parentLayer.attr('src'));
       layer.setAttr('dst', parentLayer.attr('dst'));
       return [layer];
