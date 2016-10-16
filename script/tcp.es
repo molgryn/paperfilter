@@ -121,7 +121,140 @@ export default class Dissector {
       ]
     });
 
-    let chunk = new StreamChunk('::Ethernet::TCP', 'tcp-' + Math.floor(Math.random() * 5));
+    let window = new Value(parentLayer.payload.readUInt16BE(14));
+    layer.addItem({
+      name: 'Window size',
+      value: window,
+      range: '14:16'
+    });
+    layer.setAttr('window', window);
+
+    let checksum = new Value(parentLayer.payload.readUInt16BE(16));
+    layer.addItem({
+      name: 'Checksum',
+      value: checksum,
+      range: '16:18'
+    });
+    layer.setAttr('checksum', checksum);
+
+    let urgent = new Value(parentLayer.payload.readUInt16BE(18));
+    layer.addItem({
+      name: 'Urgent pointer',
+      value: urgent,
+      range: '18:20'
+    })
+    layer.setAttr('urgent', urgent);
+
+    let optionDataOffset = dataOffset.data * 4;
+    let optionItems = [];
+    let option = {
+      name: 'Options',
+      range: '20:' + optionDataOffset,
+      children: []
+    };
+
+    let optionOffset = 20;
+
+    while (optionDataOffset > optionOffset) {
+      switch (parentLayer.payload[optionOffset]) {
+        case 0:
+          optionOffset = optionDataOffset;
+          break;
+
+        case 1:
+          option.children.push({
+            name: 'NOP',
+            range: `${optionOffset}:${optionOffset + 1}`
+          });
+          optionOffset++;
+          break;
+
+        case 2:
+          optionItems.push('Maximum segment size');
+          option.children.push({
+            name: 'Maximum segment size',
+            value: new Value(parentLayer.payload.readUInt16BE(optionOffset + 2)),
+            range: `${optionOffset}:${optionOffset + 4}`
+          });
+          optionOffset += 4;
+          break;
+
+        case 3:
+          optionItems.push('Window scale');
+          option.children.push({
+            name: 'Window scale',
+            value: new Value(parentLayer.payload.readUInt8(optionOffset + 2)),
+            range: `${optionOffset}:${optionOffset + 3}`
+          });
+          optionOffset += 3;
+          break;
+
+        case 4:
+          optionItems.push('Selective ACK permitted');
+          option.children.push({
+            name: 'Selective ACK permitted',
+            range: `${optionOffset}:${optionOffset + 2}`
+          });
+          optionOffset += 2;
+          break;
+
+        // TODO: https://tools.ietf.org/html/rfc2018
+        case 5:
+          let length = parentLayer.payload.readUInt8(optionOffset + 1);
+          optionItems.push('Selective ACK');
+          option.children.push({
+            name: 'Selective ACK',
+            value: new Value(parentLayer.payload.slice(optionOffset + 2, optionOffset + length)),
+            data: `${optionOffset}:${optionOffset + length}`
+          });
+
+          optionOffset += length;
+          break;
+
+        case 8:
+          let mt = parentLayer.payload.readUInt32BE(optionOffset + 2);
+          let et = parentLayer.payload.readUInt32BE(optionOffset + 2);
+          optionItems.push('Timestamps');
+          option.children.push({
+            name: 'Timestamps',
+            value: new Value(`${mt} - ${et}`),
+            range: `${optionOffset}:${optionOffset + 10}`,
+            children: [{
+              name: 'My timestamp',
+              value: mt,
+              range: `${optionOffset + 2}:${optionOffset + 6}`
+            }, {
+              name: 'Echo reply timestamp',
+              value: et,
+              range: `${optionOffset + 6}:${optionOffset + 10}`
+            }]
+          });
+          optionOffset += 10;
+          break;
+
+        default:
+          throw new Error('unknown option');
+      }
+    }
+
+    option.value = new Value(optionItems.join(','));
+    layer.addItem(option);
+
+    layer.payload = parentLayer.payload.slice(optionDataOffset);
+    layer.addItem({
+      name: 'Payload',
+      value: new Value(layer.payload),
+      range: optionDataOffset + ':'
+    });
+
+    layer.summary = `${layer.attr('src').data} -> ${layer.attr('dst').data} seq:${seq.data} ack:${ack.data}`;
+
+    let id = layer.attr('src').data + '/' + layer.attr('dst').data;
+    let chunk = new StreamChunk(layer.namespace, id);
+    if (flags.data['FIN'] && flags.data['ACK']) {
+      stream.end();
+    }
+
     return [layer, chunk];
   }
 };
