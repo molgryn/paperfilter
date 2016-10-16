@@ -206,6 +206,10 @@ StreamDissectorThread::Private::Private(const std::shared_ptr<Context> &ctx)
         if (ctx.streamsCb)
           ctx.streamsCb(std::move(streams));
 
+        if (chunk->end()) {
+          instances.erase(key);
+        }
+
         lock.lock();
       }
     }

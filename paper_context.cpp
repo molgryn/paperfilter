@@ -91,6 +91,8 @@ void initModule(v8pp::module *module, v8::Isolate *isolate) {
   StreamChunk_class.set("payload",
                         v8pp::property(&StreamChunk::payloadBuffer,
                                        &StreamChunk::setPayloadBuffer));
+  StreamChunk_class.set(
+      "end", v8pp::property(&StreamChunk::end, &StreamChunk::setEnd));
 
   v8pp::class_<LargeBuffer> LargeBuffer_class(isolate);
   LargeBuffer_class.ctor<>();

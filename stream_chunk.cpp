@@ -10,6 +10,7 @@ public:
   std::string id;
   std::weak_ptr<Layer> layer;
   std::unique_ptr<Buffer> payload = std::unique_ptr<Buffer>(new Buffer());
+  bool end = false;
 };
 
 StreamChunk::StreamChunk(const std::string &ns, const std::string &id)
@@ -44,3 +45,7 @@ v8::Local<v8::Object> StreamChunk::payloadBuffer() const {
   return v8pp::class_<Buffer>::import_external(isolate,
                                                d->payload->slice().release());
 }
+
+void StreamChunk::setEnd(bool end) { d->end = end; }
+
+bool StreamChunk::end() const { return d->end; }

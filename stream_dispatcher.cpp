@@ -77,6 +77,7 @@ void StreamDispatcher::insert(
   std::lock_guard<std::mutex> lock(d->mutex);
   for (auto &chunk : streamChunks) {
     const std::string &id = chunk->id();
+    bool end = chunk->end();
     Stream &stream = d->streams[id];
     if (stream.thread < 0) {
       static std::random_device dev;
@@ -88,5 +89,8 @@ void StreamDispatcher::insert(
     stream.lastUsed = std::chrono::system_clock::now();
     StreamDissectorThread &thread = *d->dissectorThreads[stream.thread];
     thread.insert(std::move(chunk));
+    if (end) {
+      d->streams.erase(id);
+    }
   }
 }

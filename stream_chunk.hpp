@@ -18,6 +18,8 @@ public:
   std::shared_ptr<Layer> layer() const;
   void setPayloadBuffer(v8::Local<v8::Object>);
   v8::Local<v8::Object> payloadBuffer() const;
+  void setEnd(bool end);
+  bool end() const;
 
 private:
   class Private;
