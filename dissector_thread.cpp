@@ -156,8 +156,12 @@ DissectorThread::Private::Private(const std::shared_ptr<Context> &ctx)
                       } else if (StreamChunk *stream =
                                      v8pp::class_<StreamChunk>::unwrap_object(
                                          isolate, array->Get(i))) {
-                        streams.push_back(std::unique_ptr<StreamChunk>(
-                            new StreamChunk(*stream, pair.second)));
+                        auto chunk = std::unique_ptr<StreamChunk>(
+                            new StreamChunk(*stream));
+                        if (!chunk->layer()) {
+                          chunk->setLayer(pair.second);
+                        }
+                        streams.push_back(std::move(chunk));
                       }
                     }
                   } else if (Layer *layer = v8pp::class_<Layer>::unwrap_object(
@@ -166,8 +170,12 @@ DissectorThread::Private::Private(const std::shared_ptr<Context> &ctx)
                   } else if (StreamChunk *stream =
                                  v8pp::class_<StreamChunk>::unwrap_object(
                                      isolate, result)) {
-                    streams.push_back(std::unique_ptr<StreamChunk>(
-                        new StreamChunk(*stream, pair.second)));
+                    auto chunk =
+                        std::unique_ptr<StreamChunk>(new StreamChunk(*stream));
+                    if (!chunk->layer()) {
+                      chunk->setLayer(pair.second);
+                    }
+                    streams.push_back(std::move(chunk));
                   }
 
                   for (const auto &child : childLayers) {

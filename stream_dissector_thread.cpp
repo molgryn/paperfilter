@@ -178,8 +178,12 @@ StreamDissectorThread::Private::Private(const std::shared_ptr<Context> &ctx)
                                v8pp::class_<StreamChunk>::unwrap_object(
                                    isolate, array->Get(i))) {
 
-                  streams.push_back(std::unique_ptr<StreamChunk>(
-                      new StreamChunk(*stream, chunk->layer())));
+                  auto newChunk =
+                      std::unique_ptr<StreamChunk>(new StreamChunk(*stream));
+                  if (!newChunk->layer()) {
+                    newChunk->setLayer(chunk->layer());
+                  }
+                  streams.push_back(std::move(newChunk));
                 }
               }
             } else if (VirtualPacket *vp =
@@ -191,8 +195,12 @@ StreamDissectorThread::Private::Private(const std::shared_ptr<Context> &ctx)
                            v8pp::class_<StreamChunk>::unwrap_object(isolate,
                                                                     result)) {
 
-              streams.push_back(std::unique_ptr<StreamChunk>(
-                  new StreamChunk(*stream, chunk->layer())));
+              auto newChunk =
+                  std::unique_ptr<StreamChunk>(new StreamChunk(*stream));
+              if (!newChunk->layer()) {
+                newChunk->setLayer(chunk->layer());
+              }
+              streams.push_back(std::move(newChunk));
             }
           }
         }

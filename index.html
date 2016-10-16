@@ -36,9 +36,9 @@
         stream_dissectors: [
           {
             namespaces: [
-              '::Ethernet::TCP'
+              /::Ethernet::\w+::TCP/
             ],
-            script: __dirname + '/script/str.es'
+            script: __dirname + '/script/tcp_stream.es'
           }
         ]
       };
