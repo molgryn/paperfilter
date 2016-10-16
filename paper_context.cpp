@@ -90,9 +90,8 @@ void initModule(v8pp::module *module, v8::Isolate *isolate) {
       .ctor<const std::string &, const std::string &, v8::Local<v8::Object>>();
   StreamChunk_class.set("namespace", v8pp::property(&StreamChunk::ns));
   StreamChunk_class.set("id", v8pp::property(&StreamChunk::id));
-  StreamChunk_class.set("payload",
-                        v8pp::property(&StreamChunk::payloadBuffer,
-                                       &StreamChunk::setPayloadBuffer));
+  StreamChunk_class.set("attr", &StreamChunk::attr);
+  StreamChunk_class.set("setAttr", &StreamChunk::setAttr);
   StreamChunk_class.set(
       "end", v8pp::property(&StreamChunk::end, &StreamChunk::setEnd));
 

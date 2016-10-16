@@ -18,8 +18,8 @@ public:
   std::string id() const;
   std::shared_ptr<Layer> layer() const;
   void setLayer(const std::shared_ptr<Layer> &layer);
-  void setPayloadBuffer(v8::Local<v8::Object>);
-  v8::Local<v8::Object> payloadBuffer() const;
+  void setAttr(const std::string &name, v8::Local<v8::Object> obj);
+  v8::Local<v8::Value> attr(const std::string &name) const;
   void setEnd(bool end);
   bool end() const;
 

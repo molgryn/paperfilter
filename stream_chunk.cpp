@@ -1,5 +1,6 @@
 #include "stream_chunk.hpp"
 #include "buffer.hpp"
+#include "item_value.hpp"
 #include "layer.hpp"
 #include <v8pp/class.hpp>
 
@@ -10,7 +11,7 @@ public:
   std::string ns;
   std::string id;
   std::shared_ptr<Layer> layer;
-  std::unique_ptr<Buffer> payload = std::unique_ptr<Buffer>(new Buffer());
+  std::unordered_map<std::string, ItemValue> attrs;
   bool end = false;
 };
 
@@ -39,19 +40,22 @@ void StreamChunk::setLayer(const std::shared_ptr<Layer> &layer) {
   d->layer = layer;
 }
 
-void StreamChunk::setPayloadBuffer(v8::Local<v8::Object> obj) {
-  Isolate *isolate = Isolate::GetCurrent();
-  if (Buffer *buffer = v8pp::class_<Buffer>::unwrap_object(isolate, obj)) {
-    d->payload = buffer->slice();
-  }
-}
-
-v8::Local<v8::Object> StreamChunk::payloadBuffer() const {
-  Isolate *isolate = Isolate::GetCurrent();
-  return v8pp::class_<Buffer>::import_external(isolate,
-                                               d->payload->slice().release());
-}
-
 void StreamChunk::setEnd(bool end) { d->end = end; }
 
 bool StreamChunk::end() const { return d->end; }
+
+void StreamChunk::setAttr(const std::string &name, v8::Local<v8::Object> obj) {
+  Isolate *isolate = Isolate::GetCurrent();
+  if (ItemValue *item = v8pp::class_<ItemValue>::unwrap_object(isolate, obj)) {
+    d->attrs.emplace(name, *item);
+  }
+}
+
+v8::Local<v8::Value> StreamChunk::attr(const std::string &name) const {
+  const auto it = d->attrs.find(name);
+  if (it == d->attrs.end())
+    return v8::Local<v8::Value>();
+  Isolate *isolate = Isolate::GetCurrent();
+  return v8pp::class_<ItemValue>::import_external(isolate,
+                                                  new ItemValue(it->second));
+}
