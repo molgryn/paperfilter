@@ -250,7 +250,7 @@ export default class Dissector {
     layer.summary = `${layer.attr('src').data} -> ${layer.attr('dst').data} seq:${seq.data} ack:${ack.data}`;
 
     let id = layer.attr('src').data + '/' + layer.attr('dst').data;
-    let chunk = new StreamChunk(layer.namespace, id, layer);
+    let chunk = new StreamChunk(parentLayer.namespace, id, layer);
     if (flags.data['FIN'] && flags.data['ACK']) {
       stream.end = true;
     }

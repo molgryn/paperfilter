@@ -88,7 +88,8 @@ void initModule(v8pp::module *module, v8::Isolate *isolate) {
   v8pp::class_<StreamChunk> StreamChunk_class(isolate);
   StreamChunk_class
       .ctor<const std::string &, const std::string &, v8::Local<v8::Object>>();
-  StreamChunk_class.set("namespace", v8pp::property(&Layer::ns));
+  StreamChunk_class.set("namespace", v8pp::property(&StreamChunk::ns));
+  StreamChunk_class.set("id", v8pp::property(&StreamChunk::id));
   StreamChunk_class.set("payload",
                         v8pp::property(&StreamChunk::payloadBuffer,
                                        &StreamChunk::setPayloadBuffer));

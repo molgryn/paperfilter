@@ -1,19 +1,33 @@
-const {Layer, StreamChunk, VirtualPacket} = require('dripcap');
+const {Layer, StreamChunk} = require('dripcap');
 
 export default class Dissector {
   constructor() {
-    this.basePackets = [];
+    this.seq = -1;
+    this.length = 0;
   }
   analyze(packet, parentLayer, chunk) {
-    this.basePackets.push(packet.seq);
-    throw 'AAAAA  '+ parentLayer.namespace;
-    if (this.basePackets.length > 3) {
+
+    if (parentLayer.payload.length > 0) {
+      let ns = chunk.namespace.replace('<TCP>', 'TCP');
+      let stream = new StreamChunk(ns, chunk.id, parentLayer);
+
       /*
-      let vp = new VirtualPacket('::Ethernet::TCP::HTTP');
-      vp.payload = packet.payload;
-      let pkt = new StreamChunk('::Ethernet::TCP::XXX', 'tgrtdd' + Math.floor(Math.random() * 5));
-      return [vp, pkt];
+      if (this.seq < 0) {
+        this.length += layer.payload.length;
+        stream.data = layer.payload;
+      } else {
+        let start = this.seq + this.length;
+        let length = layer.payload.length;
+        if (start > layer.attrs.seq) {
+          length -= (start - layer.attrs.seq);
+        }
+        this.length += length;
+        stream.data = layer.payload;
+      }
+      this.seq = layer.attrs.seq;
+      output.push(stream);
       */
     }
+
   }
 };
